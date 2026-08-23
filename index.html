@@ -180,6 +180,107 @@
       .reveal-card{min-height:auto}
     }
 
+  
+    /* ===== Clear role hierarchy ===== */
+    .roles-strip{
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      gap:12px;
+      align-items:stretch;
+      margin:16px 0 14px;
+    }
+    .role-card{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:15px 16px;
+      border-radius:18px;
+      border:2px solid transparent;
+      background:#fff;
+      box-shadow:0 5px 16px rgba(70,45,54,.06);
+    }
+    .guess-role{
+      background:linear-gradient(145deg,#fff8fb,#fff);
+      border-color:#e7b8c6;
+    }
+    .answer-role{
+      background:linear-gradient(145deg,#f5fbf7,#fff);
+      border-color:#b9d8c5;
+    }
+    .role-icon{
+      font-size:1.7rem;
+      width:44px;height:44px;
+      display:grid;place-items:center;
+      border-radius:14px;
+      background:rgba(255,255,255,.8);
+      flex:0 0 auto;
+    }
+    .role-kicker{
+      font-size:.78rem;
+      font-weight:900;
+      color:var(--muted);
+      margin-bottom:2px;
+    }
+    .role-name{
+      font-size:1.22rem;
+      font-weight:900;
+      line-height:1.2;
+    }
+    .guess-role .role-name{color:#9f3f5d}
+    .answer-role .role-name{color:#397054}
+    .role-help{
+      margin-top:4px;
+      font-size:.82rem;
+      line-height:1.35;
+      color:var(--muted);
+    }
+    .role-arrow{
+      align-self:center;
+      font-size:1.35rem;
+      font-weight:900;
+      color:#b7a7ad;
+    }
+    .your-role-banner{
+      margin:8px 0 14px;
+      padding:12px 15px;
+      border-radius:15px;
+      font-weight:900;
+      text-align:center;
+      font-size:1.02rem;
+    }
+    .your-role-banner.is-guesser{
+      color:#84324c;
+      background:#f9e9ef;
+      border:1px solid #e6bdca;
+    }
+    .your-role-banner.is-responder{
+      color:#32644b;
+      background:#edf8f1;
+      border:1px solid #c8dfd1;
+    }
+    .turn-title-subtle{
+      font-size:1rem;
+      color:var(--muted);
+      text-align:center;
+      font-weight:700;
+      margin:0 0 8px;
+    }
+    @media(max-width:600px){
+      .roles-strip{
+        grid-template-columns:1fr;
+        gap:8px;
+      }
+      .role-arrow{
+        transform:rotate(90deg);
+        justify-self:center;
+        line-height:1;
+      }
+      .role-card{
+        padding:13px 14px;
+      }
+      .role-help{font-size:.8rem}
+    }
+
   </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -227,7 +328,28 @@
     <div class="progress"><div id="progress-bar"></div></div>
     <div class="muted" id="counter"></div><div id="room-badge" class="room-badge hidden"></div>
 
-    <h2 id="turn-title"></h2>
+    <div class="roles-strip" id="roles-strip">
+      <div class="role-card guess-role">
+        <div class="role-icon">🤔</div>
+        <div>
+          <div class="role-kicker">המנחש/ת</div>
+          <div class="role-name" id="guess-role-name"></div>
+          <div class="role-help">מנסה לנחש מה השני/ה יענה/תענה</div>
+        </div>
+      </div>
+      <div class="role-arrow">⇄</div>
+      <div class="role-card answer-role">
+        <div class="role-icon">💬</div>
+        <div>
+          <div class="role-kicker">נותן/ת התשובה</div>
+          <div class="role-name" id="answer-role-name"></div>
+          <div class="role-help">כותב/ת את התשובה האמיתית</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="your-role-banner hidden" id="your-role-banner"></div>
+    <h2 id="turn-title" class="turn-title-subtle"></h2>
     <div class="question" id="question-text"></div>
 
     <div id="phase-guess">
@@ -458,9 +580,18 @@ async function syncOnlineUI(){
   state.index=onlineRoom.round_index||0; renderQuestion(); show("screen-quiz");
   document.getElementById("room-badge").classList.remove("hidden"); document.getElementById("room-badge").textContent=`חדר ${onlineRoom.room_code} • ${myPlayer==="ilan"?"אילן":"אילת"}`;
   const q=questions[state.index], responder=q.who, me=playerIndex(myPlayer), amResponder=me===responder;
+  const banner=document.getElementById("your-role-banner");
+  banner.classList.remove("hidden","is-guesser","is-responder");
+  banner.classList.add(amResponder?"is-responder":"is-guesser");
+  banner.textContent=amResponder
+    ? `התפקיד שלך עכשיו: לענות את התשובה האמיתית 💬`
+    : `התפקיד שלך עכשיו: לנחש 🤔`;
   const guess=document.getElementById("guess-text"), ans=document.getElementById("actual-text"), ansWrap=document.getElementById("online-answer-wrap"), wait=document.getElementById("online-wait"), reveal=document.getElementById("reveal-btn");
   const guessLabel=document.getElementById("guess-label");
   ansWrap.classList.toggle("hidden",!amResponder);
+  const actualLabel=document.querySelector('label[for="actual-text"]');
+  if(guessLabel) guessLabel.textContent=`הניחוש של ${names[1-responder]}`;
+  if(actualLabel) actualLabel.textContent=`התשובה האמיתית של ${names[responder]}`;
 
   // בזמן שמי שעונה כותב את התשובה האמיתית, הניחוש נשאר מוסתר ממנו.
   guess.disabled=amResponder;
@@ -591,7 +722,9 @@ function renderQuestion(){
   document.getElementById("domain-pill").textContent=q.d;
   document.getElementById("counter").textContent=`שאלה ${state.index+1} מתוך ${questions.length}`;
   document.getElementById("progress-bar").style.width=((state.index/questions.length)*100)+"%";
-  document.getElementById("turn-title").textContent=`${names[guesser]} מנחש/ת — ${names[responder]} עונה/ה`;
+  document.getElementById("turn-title").textContent=`${names[guesser]} מנחש/ת • ${names[responder]} נותן/ת את התשובה`;
+  document.getElementById("guess-role-name").textContent=names[guesser];
+  document.getElementById("answer-role-name").textContent=names[responder];
   document.getElementById("question-text").textContent=q.q;
 
   document.getElementById("guess-text").value=state.guesses[state.index] || "";
