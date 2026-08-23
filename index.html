@@ -156,11 +156,13 @@
     .reveal-card.guess-card{border-color:#e7b7c5}
     .reveal-card.answer-card{border-color:#bcdcc9;background:linear-gradient(180deg,#ffffff,#f6fff9)}
     .reveal-label{
-      font-size:.9rem;
-      font-weight:800;
-      color:var(--muted);
-      margin-bottom:9px;
+      font-size:1.05rem;
+      font-weight:900;
+      color:var(--accent);
+      margin-bottom:12px;
+      line-height:1.35;
     }
+    .answer-card .reveal-label{color:#397054}
     .reveal-name{
       font-size:1.12rem;
       font-weight:900;
@@ -231,7 +233,7 @@
     <div id="phase-guess">
       <p class="muted">התשובה של המנחש נשמרת בסוד עד שלוחצים על חשיפה.</p>
 
-      <label for="guess-text">התשובה של המנחש</label>
+      <label for="guess-text" id="guess-label">התשובה של המנחש</label>
       <textarea id="guess-text" placeholder="כתבו כאן את הניחוש שלכם..."></textarea>
       </div>
 
@@ -252,13 +254,13 @@
         <div class="reveal-title">✨ רגע החשיפה</div>
         <div class="reveal-grid">
           <div class="reveal-card guess-card">
-            <div class="reveal-label">הניחוש</div>
-            <div class="reveal-name" id="reveal-guesser-name"></div>
+            <div class="reveal-label" id="reveal-guess-label">הניחוש</div>
+            <div class="reveal-name hidden" id="reveal-guesser-name"></div>
             <div class="reveal-text" id="reveal-guess-text"></div>
           </div>
           <div class="reveal-card answer-card">
-            <div class="reveal-label">התשובה האמיתית</div>
-            <div class="reveal-name" id="reveal-responder-name"></div>
+            <div class="reveal-label" id="reveal-answer-label">התשובה האמיתית</div>
+            <div class="reveal-name hidden" id="reveal-responder-name"></div>
             <div class="reveal-text" id="reveal-actual-text"></div>
           </div>
         </div>
@@ -457,8 +459,16 @@ async function syncOnlineUI(){
   document.getElementById("room-badge").classList.remove("hidden"); document.getElementById("room-badge").textContent=`חדר ${onlineRoom.room_code} • ${myPlayer==="ilan"?"אילן":"אילת"}`;
   const q=questions[state.index], responder=q.who, me=playerIndex(myPlayer), amResponder=me===responder;
   const guess=document.getElementById("guess-text"), ans=document.getElementById("actual-text"), ansWrap=document.getElementById("online-answer-wrap"), wait=document.getElementById("online-wait"), reveal=document.getElementById("reveal-btn");
-  ansWrap.classList.toggle("hidden",!amResponder); guess.disabled=amResponder; guess.placeholder=amResponder?"בן/בת הזוג מנחש/ת בטלפון השני…":"כתבו את הניחוש שלכם כאן…";
-  guess.value=onlineRoom.guess_text||""; ans.value=onlineRoom.actual_text||"";
+  const guessLabel=document.getElementById("guess-label");
+  ansWrap.classList.toggle("hidden",!amResponder);
+
+  // בזמן שמי שעונה כותב את התשובה האמיתית, הניחוש נשאר מוסתר ממנו.
+  guess.disabled=amResponder;
+  guess.style.display=amResponder?"none":"";
+  if(guessLabel) guessLabel.style.display=amResponder?"none":"";
+  guess.placeholder="כתבו את הניחוש שלכם כאן…";
+  guess.value=amResponder ? "" : (onlineRoom.guess_text||"");
+  ans.value=onlineRoom.actual_text||"";
   wait.classList.toggle("hidden", onlineRoom.guess_locked&&onlineRoom.actual_locked);
   reveal.textContent=amResponder?"ממתינים לניחוש…":"שמירת הניחוש שלי"; reveal.style.display=amResponder?"none":(onlineRoom.guess_locked?"none":"");
   if(onlineRoom.guess_locked&&onlineRoom.actual_locked){
@@ -468,6 +478,8 @@ async function syncOnlineUI(){
     const guesserIndex = 1 - responder;
     document.getElementById("reveal-guesser-name").textContent = names[guesserIndex];
     document.getElementById("reveal-responder-name").textContent = names[responder];
+    document.getElementById("reveal-guess-label").textContent = `הניחוש של ${names[guesserIndex]}`;
+    document.getElementById("reveal-answer-label").textContent = `התשובה האמיתית של ${names[responder]}`;
     document.getElementById("reveal-guess-text").textContent = onlineRoom.guess_text || "—";
     document.getElementById("reveal-actual-text").textContent = onlineRoom.actual_text || "—";
     document.getElementById("score-instruction").textContent = amResponder
