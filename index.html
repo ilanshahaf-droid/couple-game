@@ -189,11 +189,11 @@
     <div class="center">
       <div class="heart">💞</div>
       <h1>אילן ואילת – כמה אנחנו באמת מכירים?</h1>
-      <p class="muted">בכל שאלה אחד מנחש והשני עונה. את הניחוש מקלידים, מתמללים בקול או מקליטים — ורק אחר כך חושפים.</p>
+      <p class="muted">בכל שאלה אחד מנחש והשני עונה. כל אחד כותב מהטלפון שלו — ורק אחרי ששתי התשובות נשמרו הן נחשפות יחד.</p>
     </div>
 
     <div class="notice">
-      הטקסט והניקוד נשמרים רק בדפדפן. הקלטות קול נשמרות זמנית רק במהלך ההפעלה הנוכחית.
+      במשחק בשני טלפונים התשובות והניקוד מסתנכרנים בין שני המכשירים.
     </div>
 
     <div class="actions">
@@ -213,6 +213,10 @@
         <button class="secondary" onclick="joinOnlineRoom()">הצטרפות לחדר</button>
       </div>
       <div id="online-status" class="muted center"></div>
+      <div id="share-room-actions" class="actions hidden">
+        <button class="primary" onclick="shareRoomInvite()">📤 שיתוף הזמנה</button>
+        <button class="ghost" onclick="copyRoomCode()">📋 העתקת הקוד</button>
+      </div>
     </div>
   </div>
 
@@ -228,7 +232,7 @@
       <p class="muted">התשובה של המנחש נשמרת בסוד עד שלוחצים על חשיפה.</p>
 
       <label for="guess-text">התשובה של המנחש</label>
-      <textarea id="guess-text" placeholder="הקלידו כאן, או השתמשו באחת מאפשרויות הקול..."></textarea>
+      <textarea id="guess-text" placeholder="כתבו כאן את הניחוש שלכם..."></textarea>
       </div>
 
 
@@ -368,9 +372,58 @@ async function createOnlineRoom(){
     const row={room_code:code,status:"lobby",host_player:myPlayer,ilan_online:myPlayer==="ilan",eilat_online:myPlayer==="eilat",round_index:0,guess_text:null,actual_text:null,guess_locked:false,actual_locked:false,last_rating:null,ilan_score:0,eilat_score:0};
     const {data,error}=await supabaseClient.from("couple_rooms").insert(row).select().single(); if(error) throw error;
     onlineRoom=data; onlineMode=true; document.getElementById("room-code-input").value=code;
-    await subscribeRoom(); showOnlineStatus(`החדר נוצר. הקוד הוא ${code}. שלחו אותו לבן/בת הזוג.`);
+    await subscribeRoom(); showOnlineStatus(`החדר נוצר. הקוד הוא ${code}. אפשר לשתף עכשיו קישור ישיר לבן/בת הזוג.`); showShareRoomActions();
   }catch(e){ alert("לא הצלחנו ליצור חדר: "+e.message); }
 }
+const SITE_URL = "https://ilanshahaf-droid.github.io/couple-game/";
+
+function roomInviteUrl(code){
+  const url=new URL(SITE_URL);
+  url.searchParams.set("room",code);
+  url.searchParams.set("player",myPlayer === "ilan" ? "eilat" : "ilan");
+  return url.toString();
+}
+
+function showShareRoomActions(){
+  const el=document.getElementById("share-room-actions");
+  if(el) el.classList.toggle("hidden",!(onlineMode&&onlineRoom&&onlineRoom.room_code));
+}
+
+async function shareRoomInvite(){
+  if(!onlineRoom?.room_code) return;
+  const code=onlineRoom.room_code;
+  const url=roomInviteUrl(code);
+  const text=`💕 הזמנתי אותך למשחק “כמה אנחנו באמת מכירים?”\n\nקוד החדר: ${code}\n\nלחיצה על הקישור תפתח את המשחק כשהקוד כבר מוכן להצטרפות:`;
+  try{
+    if(navigator.share){
+      await navigator.share({title:"כמה אנחנו באמת מכירים?",text,url});
+    }else{
+      await navigator.clipboard.writeText(`${text}\n${url}`);
+      alert("ההזמנה הועתקה. אפשר להדביק אותה ב-WhatsApp.");
+    }
+  }catch(e){ if(e.name!=="AbortError") alert("לא הצלחנו לשתף את ההזמנה."); }
+}
+
+async function copyRoomCode(){
+  if(!onlineRoom?.room_code) return;
+  try{
+    await navigator.clipboard.writeText(onlineRoom.room_code);
+    alert(`הקוד ${onlineRoom.room_code} הועתק.`);
+  }catch(e){ alert(`קוד החדר: ${onlineRoom.room_code}`); }
+}
+
+function applyInviteFromUrl(){
+  const params=new URLSearchParams(location.search);
+  const code=(params.get("room")||"").trim().toUpperCase();
+  const player=params.get("player");
+  if(code){
+    document.getElementById("room-code-input").value=code;
+    if(player==="ilan"||player==="eilat") document.getElementById("player-select").value=player;
+    showOnlineStatus(`קוד החדר ${code} כבר הוזן. לחצו על “הצטרפות לחדר”.`);
+    document.getElementById("room-code-input").scrollIntoView({behavior:"smooth",block:"center"});
+  }
+}
+
 async function joinOnlineRoom(){
   try{
     await ensureAnon(); myPlayer=document.getElementById("player-select").value;
@@ -494,12 +547,6 @@ let state = {
   selectedScore:null
 };
 
-let recognition = null;
-let isDictating = false;
-let mediaRecorder = null;
-let audioChunks = [];
-let currentAudioUrl = null;
-let isRecording = false;
 
 function show(id){
   ["screen-start","screen-quiz","screen-scoreboard","screen-result"].forEach(x =>
@@ -550,9 +597,8 @@ async function revealAnswerPhase(){
   saveState();
 
   const hasTyped = state.guesses[state.index].length > 0;
-  const hasAudio = !!currentAudioUrl;
-  if(!hasTyped && !hasAudio){
-    alert("יש להקליד, לתמלל או להקליט תשובה לפני החשיפה.");
+  if(!hasTyped){
+    alert("יש לכתוב תשובה לפני החשיפה.");
     return;
   }
 
@@ -716,6 +762,8 @@ function restartQuiz(){
   }
 }
 
+
+window.addEventListener("DOMContentLoaded",applyInviteFromUrl);
 
 function escapeHtml(str){
   return str.replace(/[&<>"']/g,m=>({
