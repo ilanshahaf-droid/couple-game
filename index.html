@@ -335,6 +335,41 @@
       .transition-score{font-size:3.3rem}
     }
 
+  
+    /* ===== V5 enhancements ===== */
+    .game-length-box{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      margin:16px 0 4px;padding:16px 18px;border:1px solid var(--border);
+      border-radius:18px;background:#fffafb;
+    }
+    .game-length-title{font-weight:900;font-size:1.05rem;margin-bottom:3px}
+    .game-length-box select{width:auto;min-width:190px;margin:0}
+    .discovery-title{font-weight:900;margin:20px 0 9px}
+    .discovery-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .discovery-btn{
+      background:#fff;border:1.5px solid var(--border);color:var(--text);min-height:52px
+    }
+    .discovery-btn.active{
+      background:var(--soft);border-color:#dca9b9;color:var(--accent);
+      box-shadow:0 5px 14px rgba(159,63,93,.10)
+    }
+    .special-card{
+      margin:18px auto 4px;max-width:520px;padding:20px;border-radius:20px;
+      background:linear-gradient(145deg,#fff8ed,#fff3f7);
+      border:1px solid #ead3c7;text-align:center
+    }
+    .special-card-icon{font-size:2rem;margin-bottom:5px}
+    .special-card-kicker{font-size:.8rem;font-weight:900;color:var(--accent);margin-bottom:6px}
+    .special-card-text{font-size:1.08rem;font-weight:800;line-height:1.55}
+    .result-list{display:grid;gap:10px;margin:10px 0 18px}
+    .result-item{padding:13px 15px;border:1px solid var(--border);border-radius:15px;background:#fffafb;line-height:1.5}
+    .result-empty{color:var(--muted);font-size:.92rem}
+    @media(max-width:600px){
+      .game-length-box{display:block}
+      .game-length-box select{width:100%;margin-top:12px}
+      .discovery-actions{grid-template-columns:1fr}
+    }
+
   </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -351,6 +386,17 @@
 
     <div class="notice">
       במשחק בשני טלפונים התשובות והניקוד מסתנכרנים בין שני המכשירים.
+    </div>
+    <div class="game-length-box">
+      <div>
+        <div class="game-length-title">כמה זמן בא לכם לשחק?</div>
+        <div class="muted">אפשר להתחיל קצר ולשמור את הגרסה המלאה לערב אחר.</div>
+      </div>
+      <select id="game-length-select" aria-label="אורך המשחק">
+        <option value="12">קצר · 12 שאלות</option>
+        <option value="20" selected>בינוני · 20 שאלות</option>
+        <option value="38">מלא · 38 שאלות</option>
+      </select>
     </div>
 
     <div class="mode-title">איך תרצו לשחק?</div>
@@ -479,8 +525,13 @@
         <div>ממש טוב</div>
       </div>
 
-      <label for="surprise-text">משהו שהפתיע אתכם? <span class="muted">(לא חובה)</span></label>
-      <textarea id="surprise-text" placeholder="כתבו דבר חדש או מפתיע שלמדתם..."></textarea>
+      <div class="discovery-title">מה קרה לכם ברגע החשיפה?</div>
+      <div class="discovery-actions">
+        <button type="button" class="discovery-btn" id="wow-btn" onclick="toggleMarker('wow')">✨ וואו, לא ידעתי</button>
+        <button type="button" class="discovery-btn" id="talk-btn" onclick="toggleMarker('talk')">💬 נחזור לדבר על זה</button>
+      </div>
+      <label for="surprise-text">משהו שתרצו לזכור? <span class="muted">(לא חובה)</span></label>
+      <textarea id="surprise-text" placeholder="אפשר לכתוב משפט קצר לעצמכם..."></textarea>
 
       <div class="actions">
         <button class="primary" onclick="finishRound()">סיום הסיבוב</button>
@@ -524,6 +575,11 @@
     <div class="muted" id="transition-message"></div>
     <div class="transition-total" id="transition-total"></div>
     <div class="next-role" id="transition-next-role"></div>
+    <div class="special-card hidden" id="transition-special">
+      <div class="special-card-icon" id="special-card-icon">💞</div>
+      <div class="special-card-kicker">קלף זוגי</div>
+      <div class="special-card-text" id="special-card-text"></div>
+    </div>
     <div class="actions">
       <button class="primary" id="transition-next-btn" onclick="advanceOnlineRound()">לשאלה הבאה</button>
     </div>
@@ -654,6 +710,15 @@ function showTransition(points,guesserIndex,nextIndex,isFinished){
   const currentResponder=questions[onlineRoom.round_index]?.who;
   const canAdvance=playerIndex(myPlayer)===currentResponder;
   btn.style.display=canAdvance?"":"none";
+  const special=document.getElementById("transition-special");
+  const card=specialCardFor(onlineRoom.round_index);
+  if(card && !isFinished){
+    document.getElementById("special-card-icon").textContent=card.icon;
+    document.getElementById("special-card-text").textContent=card.text;
+    special.classList.remove("hidden");
+  }else{
+    special.classList.add("hidden");
+  }
   if(isFinished){
     document.getElementById("transition-next-role").textContent="סיימתם את כל השאלות.";
     btn.textContent="לתוצאה הסופית";
@@ -661,7 +726,7 @@ function showTransition(points,guesserIndex,nextIndex,isFinished){
     const q=questions[nextIndex], nextGuesser=1-q.who;
     document.getElementById("transition-next-role").textContent=
       `בשאלה הבאה: ${names[nextGuesser]} מנחש/ת • ${names[q.who]} נותן/ת את התשובה`;
-    btn.textContent="לשאלה הבאה";
+    btn.textContent=card?"סיימנו את הקלף — לשאלה הבאה":"לשאלה הבאה";
   }
   if(!canAdvance){
     document.getElementById("transition-next-role").textContent += " • ממתינים למי שנתן/ה את התשובה להמשיך.";
@@ -672,7 +737,7 @@ async function advanceOnlineRound(){
   if(!pendingAdvance)return;
   const p=pendingAdvance; pendingAdvance=null;
   const patch={last_rating:null,guess_text:null,actual_text:null,guess_locked:false,actual_locked:false};
-  if(p.isFinished) patch.status="finished";
+  if(p.isFinished) patch.status=roomStatus("finished");
   else patch.round_index=p.nextIndex;
   const {error}=await supabaseClient.from("couple_rooms").update(patch).eq("id",onlineRoom.id);
   if(error) alert(error.message);
@@ -699,10 +764,12 @@ window.addEventListener("DOMContentLoaded",applyInviteFromUrl);
 async function createOnlineRoom(){
   try{
     await ensureAnon(); myPlayer=document.getElementById("player-select").value;
+    setGameLength(document.getElementById("game-length-select")?.value||20);
+    loadMarkers();
     const code=makeRoomCode();
-    const row={room_code:code,status:"lobby",host_player:myPlayer,ilan_online:myPlayer==="ilan",eilat_online:myPlayer==="eilat",round_index:0,guess_text:null,actual_text:null,guess_locked:false,actual_locked:false,last_rating:null,ilan_score:0,eilat_score:0};
+    const row={room_code:code,status:roomStatus("lobby"),host_player:myPlayer,ilan_online:myPlayer==="ilan",eilat_online:myPlayer==="eilat",round_index:0,guess_text:null,actual_text:null,guess_locked:false,actual_locked:false,last_rating:null,ilan_score:0,eilat_score:0};
     const {data,error}=await supabaseClient.from("couple_rooms").insert(row).select().single(); if(error) throw error;
-    onlineRoom=data; onlineMode=true; document.getElementById("room-code-input").value=code;
+    onlineRoom=data; onlineMode=true; markers={wow:{},talk:{}}; saveMarkers(); document.getElementById("room-code-input").value=code;
     await subscribeRoom(); showOnlineStatus(`החדר נוצר. הקוד הוא ${code}. אפשר לשתף עכשיו קישור ישיר לבן/בת הזוג.`); showShareRoomActions();
   }catch(e){ alert("לא הצלחנו ליצור חדר: "+e.message); }
 }
@@ -761,6 +828,7 @@ async function joinOnlineRoom(){
     const code=document.getElementById("room-code-input").value.trim().toUpperCase(); if(!code){alert("הקלידו קוד חדר.");return;}
     const {data,error}=await supabaseClient.from("couple_rooms").select("*").eq("room_code",code).single(); if(error) throw error;
     onlineRoom=data; onlineMode=true;
+    const rs=parseRoomStatus(data.status); setGameLength(rs.length); loadMarkers();
     const patch=myPlayer==="ilan"?{ilan_online:true}:{eilat_online:true};
     await supabaseClient.from("couple_rooms").update(patch).eq("id",data.id);
     await subscribeRoom(); showOnlineStatus(`התחברתם לחדר ${code}.`); document.getElementById("invite-link-info").innerHTML=""; await refreshRoom();
@@ -775,15 +843,17 @@ async function subscribeRoom(){
 async function refreshRoom(){const {data}=await supabaseClient.from("couple_rooms").select("*").eq("id",onlineRoom.id).single(); if(data){onlineRoom=data;syncOnlineUI();}}
 async function startOnlineIfReady(){
   if(!onlineRoom) return;
-  if(onlineRoom.ilan_online && onlineRoom.eilat_online && onlineRoom.status==="lobby") await supabaseClient.from("couple_rooms").update({status:"playing"}).eq("id",onlineRoom.id);
+  const rs=parseRoomStatus(onlineRoom.status); setGameLength(rs.length);
+  if(onlineRoom.ilan_online && onlineRoom.eilat_online && rs.base==="lobby") await supabaseClient.from("couple_rooms").update({status:roomStatus("playing")}).eq("id",onlineRoom.id);
 }
 async function syncOnlineUI(){
   if(!onlineMode||!onlineRoom)return;
-  if(onlineRoom.status==="lobby"){
+  const rs=parseRoomStatus(onlineRoom.status); setGameLength(rs.length);
+  if(rs.base==="lobby"){
     show("screen-start"); showOnlineStatus(onlineRoom.ilan_online&&onlineRoom.eilat_online?"שניכם מחוברים — מתחילים!":"ממתינים לטלפון השני…");
     if(onlineRoom.ilan_online&&onlineRoom.eilat_online) startOnlineIfReady(); return;
   }
-  if(onlineRoom.status==="finished"){showOnlineResults();return;}
+  if(rs.base==="finished"){showOnlineResults();return;}
   if(onlineRoom.last_rating!==null && onlineRoom.guess_locked && onlineRoom.actual_locked){
     const qNow=questions[onlineRoom.round_index], gNow=1-qNow.who;
     const done=onlineRoom.round_index>=questions.length-1;
@@ -846,13 +916,22 @@ async function showOnlineResults(){
   show("screen-result"); const total=(onlineRoom.ilan_score||0)+(onlineRoom.eilat_score||0), max=questions.length*3;
   document.getElementById("result-score").textContent=total; document.getElementById("result-max").textContent=`מתוך ${max} נקודות`;
   document.getElementById("final-ilan-score").textContent=onlineRoom.ilan_score||0; document.getElementById("final-eilat-score").textContent=onlineRoom.eilat_score||0;
-  document.getElementById("result-title").textContent="סיימתם את המשחק יחד 💞"; document.getElementById("result-text").textContent="הניקוד הסתנכרן בין שני הטלפונים.";
-  document.getElementById("domain-results").innerHTML=""; document.getElementById("surprise-results").innerHTML="";
+  document.getElementById("result-title").textContent="סיימתם את המשחק יחד 💞";
+  document.getElementById("result-text").textContent=`סיימתם ${questions.length} שאלות. הציון הוא חלק מהמשחק — הדברים שגיליתם חשובים יותר.`;
+  document.getElementById("domain-results").innerHTML="";
+  loadMarkers();
+  const wow=markerItems("wow"), talk=markerItems("talk");
+  const sr=document.getElementById("surprise-results");
+  sr.innerHTML=`
+    <h3>✨ וואו, לא ידעתי</h3>
+    <div class="result-list">${wow.length?wow.map(i=>`<div class="result-item">${escapeHtml(questions[i].q)}</div>`).join(""):`<div class="result-empty">לא סימנתם תשובות בקטגוריה הזו במכשיר הזה.</div>`}</div>
+    <h3>💬 נחזור לדבר על זה</h3>
+    <div class="result-list">${talk.length?talk.map(i=>`<div class="result-item">${escapeHtml(questions[i].q)}</div>`).join(""):`<div class="result-empty">לא סימנתם נושאים לחזרה במכשיר הזה.</div>`}</div>`;
 }
 
 const names = ["אילן","אילת"];
 
-const questions = [
+const allQuestions = [
   {d:"כמה אנחנו באמת מכירים?", who:1, q:"מה הדבר שהכי מעסיק את אילת בתקופה האחרונה?"},
   {d:"כמה אנחנו באמת מכירים?", who:0, q:"מה הכי משמח את אילן בשגרה בתקופה האחרונה?"},
   {d:"כמה אנחנו באמת מכירים?", who:1, q:"מה אילת מרגישה שחסר לה כרגע בחיים?"},
@@ -896,6 +975,61 @@ const questions = [
   {d:"הבחירה זה בזו", who:1, q:"מה אילת הייתה רוצה שתשמרו ביניכם גם כשתהיו הרבה יותר מבוגרים?"},
   {d:"הבחירה זה בזו", who:0, q:"אם אילן היה צריך להסביר במשפט אחד למה הוא עדיין בוחר באילת – מה הוא היה אומר?"}
 ];
+let questions=[...allQuestions];
+let gameLength=38;
+
+const GAME_SETS={
+  12:[0,3,5,8,11,14,16,20,23,27,30,35],
+  20:[0,2,4,6,8,10,12,15,16,18,20,22,23,25,27,29,30,32,34,37],
+  38:Array.from({length:38},(_,i)=>i)
+};
+function setGameLength(n){
+  gameLength=[12,20,38].includes(Number(n))?Number(n):38;
+  const ids=GAME_SETS[gameLength]||GAME_SETS[38];
+  questions=ids.map(i=>allQuestions[i]);
+  const sel=document.getElementById("game-length-select");
+  if(sel) sel.value=String(gameLength);
+}
+function parseRoomStatus(status){
+  const parts=String(status||"lobby").split("|");
+  return {base:parts[0],length:Number(parts[1])||38};
+}
+function roomStatus(base){ return `${base}|${gameLength}`; }
+
+const SPECIAL_CARDS=[
+  {icon:"💬",text:"כל אחד אומר לשני דבר אחד שהוא מעריך בו ולא אמר לאחרונה."},
+  {icon:"😄",text:"בחרו זיכרון זוגי קטן שעד היום מצליח להצחיק אתכם."},
+  {icon:"🤍",text:"קחו חצי דקה בלי שאלות ובלי ניקוד — רק קרבה שנעימה לשניכם."},
+  {icon:"🌱",text:"כל אחד משלים: משהו קטן שהייתי שמח שנעשה יותר יחד הוא…"},
+  {icon:"✨",text:"אמרו זה לזו משהו אחד שהפתיע אתכם לטובה בקשר לאורך השנים."}
+];
+function specialCardFor(completedIndex){
+  if((completedIndex+1)%5!==0 || completedIndex>=questions.length-1) return null;
+  return SPECIAL_CARDS[Math.floor(completedIndex/5)%SPECIAL_CARDS.length];
+}
+
+let markers={wow:{},talk:{}};
+function markerKey(){
+  return onlineMode && onlineRoom ? `coupleMarkers_${onlineRoom.room_code}_${myPlayer}` : "coupleMarkers_single";
+}
+function loadMarkers(){
+  try{markers=JSON.parse(localStorage.getItem(markerKey()))||{wow:{},talk:{}};}catch(e){markers={wow:{},talk:{}}}
+  markers.wow=markers.wow||{}; markers.talk=markers.talk||{};
+}
+function saveMarkers(){ localStorage.setItem(markerKey(),JSON.stringify(markers)); }
+function toggleMarker(type){
+  const i=state.index;
+  markers[type][i]=!markers[type][i];
+  saveMarkers(); updateMarkerButtons();
+}
+function updateMarkerButtons(){
+  const i=state.index;
+  document.getElementById("wow-btn")?.classList.toggle("active",!!markers.wow[i]);
+  document.getElementById("talk-btn")?.classList.toggle("active",!!markers.talk[i]);
+}
+function markerItems(type){
+  return Object.keys(markers[type]||{}).filter(k=>markers[type][k]).map(Number).filter(i=>questions[i]);
+}
 
 let state = {
   index:0,
@@ -914,6 +1048,8 @@ function show(id){
 }
 
 function startQuiz(){
+  setGameLength(document.getElementById("game-length-select")?.value||38);
+  markers={wow:{},talk:{}}; saveMarkers();
   state={index:0,scores:[],guesses:[],surprises:[],selectedScore:null};
   saveState();
   renderQuestion();
@@ -921,6 +1057,8 @@ function startQuiz(){
 }
 
 function resumeQuiz(){
+  setGameLength(localStorage.getItem("ilanEilatGameLength")||document.getElementById("game-length-select")?.value||38);
+  loadMarkers();
   const saved=localStorage.getItem("ilanEilatCoupleQuizV2");
   if(!saved){ alert("לא נמצאה התקדמות שמורה."); return; }
   state=JSON.parse(saved);
@@ -949,6 +1087,7 @@ function renderQuestion(){
 
   document.getElementById("phase-guess").classList.remove("hidden");
   document.getElementById("phase-score").classList.add("hidden");
+  updateMarkerButtons();
 }
 
 async function revealAnswerPhase(){
@@ -1053,6 +1192,7 @@ function continueAfterScore(){
 
 function saveState(){
   localStorage.setItem("ilanEilatCoupleQuizV2",JSON.stringify(state));
+  localStorage.setItem("ilanEilatGameLength",String(gameLength));
 }
 
 function showResults(){
