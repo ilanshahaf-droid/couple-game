@@ -281,6 +281,60 @@
       .role-help{font-size:.8rem}
     }
 
+  
+    /* ===== V4 game experience ===== */
+    .mode-title{font-size:1.02rem;font-weight:900;margin:22px 0 8px;color:var(--text)}
+    .mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+    .mode-card{
+      border:1px solid var(--border);border-radius:20px;padding:17px;background:#fff;
+      box-shadow:0 5px 16px rgba(70,45,54,.05)
+    }
+    .mode-card h3{margin:0 0 5px}.mode-card p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.5}
+    .mode-card .actions{margin-top:12px}
+    .invite-box{
+      margin-top:14px;padding:15px;border-radius:17px;background:#faf1f4;border:1px solid #e6cbd4;
+      text-align:center
+    }
+    .invite-code{direction:ltr;font-size:1.45rem;font-weight:900;letter-spacing:.12em;color:var(--accent);margin:5px 0}
+    .reveal-gate{
+      text-align:center;padding:24px 16px;margin:12px 0 18px;border-radius:22px;
+      background:linear-gradient(145deg,#fff8fb,#fff);border:1px solid #e8cfd7
+    }
+    .reveal-gate .big{font-size:2.1rem;margin-bottom:6px}
+    .reveal-gate h3{font-size:1.35rem;margin:0 0 6px}
+    .reveal-gate p{margin:0 0 14px;color:var(--muted)}
+    .reveal-content{animation:revealIn .38s ease both}
+    @keyframes revealIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+    .live-score{
+      display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;
+      margin:10px 0 15px
+    }
+    .live-score-chip{
+      padding:8px 12px;border-radius:999px;background:#fff;border:1px solid var(--border);
+      font-weight:850;font-size:.9rem
+    }
+    .transition-card{text-align:center}
+    .transition-score{
+      font-size:4rem;font-weight:950;color:var(--accent);line-height:1;margin:12px 0 5px
+    }
+    .transition-who{font-size:1.18rem;font-weight:900;margin-bottom:6px}
+    .transition-total{
+      margin:18px auto 4px;max-width:420px;padding:13px;border-radius:16px;background:var(--soft);
+      font-weight:800;color:var(--accent)
+    }
+    .next-role{
+      margin:15px auto 0;max-width:500px;padding:13px 15px;border-radius:16px;
+      border:1px dashed #d8b5c0;color:var(--muted);font-weight:750
+    }
+    .joined-highlight{
+      padding:10px 13px;margin:10px 0;border-radius:14px;background:#eef8f1;border:1px solid #cce2d3;
+      color:#32644b;font-weight:850;text-align:center
+    }
+    @media(max-width:600px){
+      .mode-cards{grid-template-columns:1fr}
+      .transition-score{font-size:3.3rem}
+    }
+
   </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -299,13 +353,25 @@
       במשחק בשני טלפונים התשובות והניקוד מסתנכרנים בין שני המכשירים.
     </div>
 
-    <div class="actions">
-      <button class="primary" onclick="startQuiz()">מתחילים</button>
-      <button class="ghost" onclick="resumeQuiz()">המשך מהפעם הקודמת</button>
+    <div class="mode-title">איך תרצו לשחק?</div>
+    <div class="mode-cards">
+      <div class="mode-card">
+        <h3>📱 יחד — בשני טלפונים</h3>
+        <p>כל אחד כותב בטלפון שלו. התשובות נשמרות בסוד עד רגע החשיפה.</p>
+        <div class="actions"><button class="primary" type="button" onclick="document.querySelector('.online-box').scrollIntoView({behavior:'smooth',block:'center'})">משחק בשני טלפונים</button></div>
+      </div>
+      <div class="mode-card">
+        <h3>🤝 יחד — בטלפון אחד</h3>
+        <p>מעבירים את הטלפון ביניכם ומשחקים באותו מכשיר.</p>
+        <div class="actions">
+          <button class="secondary" onclick="startQuiz()">התחלה</button>
+          <button class="ghost" onclick="resumeQuiz()">המשך משחק</button>
+        </div>
+      </div>
     </div>
 
     <div class="online-box">
-      <h3>📱 משחק בשני טלפונים</h3>
+      <h3>חדר משותף</h3>
       <p class="muted">בכל טלפון בחרו מי משחק בו. אילן יכול ליצור חדר, ואילת להצטרף עם הקוד.</p>
       <div class="online-grid">
         <select id="player-select"><option value="ilan">אני אילן</option><option value="eilat">אני אילת</option></select>
@@ -316,6 +382,7 @@
         <button class="secondary" onclick="joinOnlineRoom()">הצטרפות לחדר</button>
       </div>
       <div id="online-status" class="muted center"></div>
+      <div id="invite-link-info"></div>
       <div id="share-room-actions" class="actions hidden">
         <button class="primary" onclick="shareRoomInvite()">📤 שיתוף הזמנה</button>
         <button class="ghost" onclick="copyRoomCode()">📋 העתקת הקוד</button>
@@ -373,7 +440,14 @@
 
     <div id="phase-score" class="hidden">
       <div id="online-reveal-design" class="hidden">
-        <div class="reveal-title">✨ רגע החשיפה</div>
+        <div id="reveal-gate" class="reveal-gate">
+          <div class="big">✨</div>
+          <h3>שניכם עניתם</h3>
+          <p>הניחוש והתשובה נעולים. מוכנים לראות עד כמה אתם מכירים?</p>
+          <button class="primary" type="button" onclick="openReveal()">חשיפת התשובות</button>
+        </div>
+        <div id="reveal-content" class="hidden reveal-content">
+        <div class="reveal-title">רגע החשיפה</div>
         <div class="reveal-grid">
           <div class="reveal-card guess-card">
             <div class="reveal-label" id="reveal-guess-label">הניחוש</div>
@@ -386,9 +460,11 @@
             <div class="reveal-text" id="reveal-actual-text"></div>
           </div>
         </div>
+        </div>
       </div>
-      <p class="muted" id="score-instruction">עכשיו מי שענה מדרג עד כמה הניחוש היה קרוב ומדויק.</p>
+      <p class="muted hidden" id="score-instruction">עכשיו מי שענה מדרג עד כמה הניחוש היה קרוב ומדויק.</p>
 
+      <div id="rating-content" class="hidden">
       <label>הציון לסיבוב</label>
       <div class="score-row">
         <button class="score-btn" onclick="chooseScore(0)">0</button>
@@ -408,6 +484,7 @@
 
       <div class="actions">
         <button class="primary" onclick="finishRound()">סיום הסיבוב</button>
+      </div>
       </div>
     </div>
   </div>
@@ -436,6 +513,19 @@
 
     <div class="actions">
       <button class="primary" id="continue-btn" onclick="continueAfterScore()">לשאלה הבאה</button>
+    </div>
+  </div>
+
+  <div class="card hidden transition-card" id="screen-transition">
+    <div class="heart">💗</div>
+    <div class="muted">הסיבוב הסתיים</div>
+    <div class="transition-score" id="transition-points">0</div>
+    <div class="transition-who" id="transition-who"></div>
+    <div class="muted" id="transition-message"></div>
+    <div class="transition-total" id="transition-total"></div>
+    <div class="next-role" id="transition-next-role"></div>
+    <div class="actions">
+      <button class="primary" id="transition-next-btn" onclick="advanceOnlineRound()">לשאלה הבאה</button>
     </div>
   </div>
 
@@ -489,6 +579,123 @@ async function ensureAnon(){
   const {data:{session}} = await supabaseClient.auth.getSession();
   if(!session){ const {error}=await supabaseClient.auth.signInAnonymously(); if(error) throw error; }
 }
+
+let pendingAdvance = null;
+
+function currentSiteUrl(){
+  return "https://ilanshahaf-droid.github.io/couple-game/";
+}
+function buildInviteUrl(code, invitedPlayer){
+  const u = new URL(currentSiteUrl());
+  u.searchParams.set("room", code);
+  if(invitedPlayer) u.searchParams.set("player", invitedPlayer);
+  return u.toString();
+}
+function getInvitedPlayer(){
+  if(!myPlayer) return "";
+  return myPlayer==="ilan" ? "eilat" : "ilan";
+}
+function getInviteText(){
+  if(!onlineRoom) return "";
+  const invited=getInvitedPlayer();
+  const link=buildInviteUrl(onlineRoom.room_code,invited);
+  return `הצטרפ/י אליי למשחק הזוגי שלנו 💞
+קוד החדר: ${onlineRoom.room_code}
+
+לחיצה כאן תפתח את המשחק עם הקוד מוכן:
+${link}`;
+}
+async function shareInvite(){
+  if(!onlineRoom){alert("קודם צריך ליצור חדר.");return;}
+  const text=getInviteText();
+  const url=buildInviteUrl(onlineRoom.room_code,getInvitedPlayer());
+  if(navigator.share){
+    try{ await navigator.share({title:"הזמנה למשחק הזוגי",text,url}); return; }
+    catch(e){ if(e && e.name==="AbortError") return; }
+  }
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,"_blank");
+}
+async function copyRoomCode(){
+  if(!onlineRoom)return;
+  try{await navigator.clipboard.writeText(onlineRoom.room_code); alert("קוד החדר הועתק.");}
+  catch(e){prompt("העתיקו את קוד החדר:",onlineRoom.room_code);}
+}
+function showInviteControls(){
+  const box=document.getElementById("invite-link-info");
+  if(!box||!onlineRoom)return;
+  box.innerHTML=`
+    <div class="invite-box">
+      <div class="muted">קוד החדר</div>
+      <div class="invite-code">${onlineRoom.room_code}</div>
+      <div class="actions">
+        <button class="primary" type="button" onclick="shareInvite()">📤 שיתוף הזמנה</button>
+        <button class="ghost" type="button" onclick="copyRoomCode()">📋 העתקת הקוד</button>
+      </div>
+    </div>`;
+}
+function openReveal(){
+  document.getElementById("reveal-gate")?.classList.add("hidden");
+  document.getElementById("reveal-content")?.classList.remove("hidden");
+  document.getElementById("score-instruction")?.classList.remove("hidden"); document.getElementById("rating-content")?.classList.remove("hidden");
+}
+function resetRevealGate(){
+  document.getElementById("reveal-gate")?.classList.remove("hidden");
+  document.getElementById("reveal-content")?.classList.add("hidden");
+  document.getElementById("score-instruction")?.classList.add("hidden"); document.getElementById("rating-content")?.classList.add("hidden");
+}
+function showTransition(points,guesserIndex,nextIndex,isFinished){
+  const ilan=onlineRoom.ilan_score||0, eilat=onlineRoom.eilat_score||0;
+  document.getElementById("transition-points").textContent=`+${points}`;
+  document.getElementById("transition-who").textContent=`${names[guesserIndex]} קיבל/ה ${points} נקודות`;
+  document.getElementById("transition-message").textContent=
+    points===3?"פגיעה מצוינת 🎯":points===2?"די קרוב! 👏":points===1?"היה כיוון 🙂":"הפעם הייתה הפתעה 💡";
+  document.getElementById("transition-total").textContent=`אילן ${ilan} • ${eilat} אילת`;
+  const btn=document.getElementById("transition-next-btn");
+  const currentResponder=questions[onlineRoom.round_index]?.who;
+  const canAdvance=playerIndex(myPlayer)===currentResponder;
+  btn.style.display=canAdvance?"":"none";
+  if(isFinished){
+    document.getElementById("transition-next-role").textContent="סיימתם את כל השאלות.";
+    btn.textContent="לתוצאה הסופית";
+  }else{
+    const q=questions[nextIndex], nextGuesser=1-q.who;
+    document.getElementById("transition-next-role").textContent=
+      `בשאלה הבאה: ${names[nextGuesser]} מנחש/ת • ${names[q.who]} נותן/ת את התשובה`;
+    btn.textContent="לשאלה הבאה";
+  }
+  if(!canAdvance){
+    document.getElementById("transition-next-role").textContent += " • ממתינים למי שנתן/ה את התשובה להמשיך.";
+  }
+  show("screen-transition");
+}
+async function advanceOnlineRound(){
+  if(!pendingAdvance)return;
+  const p=pendingAdvance; pendingAdvance=null;
+  const patch={last_rating:null,guess_text:null,actual_text:null,guess_locked:false,actual_locked:false};
+  if(p.isFinished) patch.status="finished";
+  else patch.round_index=p.nextIndex;
+  const {error}=await supabaseClient.from("couple_rooms").update(patch).eq("id",onlineRoom.id);
+  if(error) alert(error.message);
+}
+function applyInviteFromUrl(){
+  const params=new URLSearchParams(location.search);
+  const room=(params.get("room")||"").trim().toUpperCase();
+  const player=params.get("player");
+  if(room){
+    const input=document.getElementById("room-code-input");
+    if(input) input.value=room;
+    if(player==="ilan"||player==="eilat"){
+      const sel=document.getElementById("player-select");
+      if(sel) sel.value=player;
+    }
+    const info=document.getElementById("invite-link-info");
+    if(info) info.innerHTML=`<div class="joined-highlight">הגעתם דרך הזמנה 💞 קוד החדר כבר הוזן. לחצו על “הצטרפות לחדר”.</div>`;
+    setTimeout(()=>document.querySelector(".online-box")?.scrollIntoView({behavior:"smooth",block:"center"}),250);
+  }
+}
+window.addEventListener("DOMContentLoaded",applyInviteFromUrl);
+
+
 async function createOnlineRoom(){
   try{
     await ensureAnon(); myPlayer=document.getElementById("player-select").value;
@@ -556,7 +763,7 @@ async function joinOnlineRoom(){
     onlineRoom=data; onlineMode=true;
     const patch=myPlayer==="ilan"?{ilan_online:true}:{eilat_online:true};
     await supabaseClient.from("couple_rooms").update(patch).eq("id",data.id);
-    await subscribeRoom(); showOnlineStatus(`התחברתם לחדר ${code}.`); await refreshRoom();
+    await subscribeRoom(); showOnlineStatus(`התחברתם לחדר ${code}.`); document.getElementById("invite-link-info").innerHTML=""; await refreshRoom();
   }catch(e){ alert("לא הצלחנו להצטרף: "+e.message); }
 }
 function showOnlineStatus(s){document.getElementById("online-status").textContent=s;}
@@ -577,7 +784,15 @@ async function syncOnlineUI(){
     if(onlineRoom.ilan_online&&onlineRoom.eilat_online) startOnlineIfReady(); return;
   }
   if(onlineRoom.status==="finished"){showOnlineResults();return;}
-  state.index=onlineRoom.round_index||0; renderQuestion(); show("screen-quiz");
+  if(onlineRoom.last_rating!==null && onlineRoom.guess_locked && onlineRoom.actual_locked){
+    const qNow=questions[onlineRoom.round_index], gNow=1-qNow.who;
+    const done=onlineRoom.round_index>=questions.length-1;
+    const next=onlineRoom.round_index+1;
+    if(!pendingAdvance) pendingAdvance={points:onlineRoom.last_rating,guesser:gNow,nextIndex:next,isFinished:done};
+    showTransition(onlineRoom.last_rating,gNow,next,done);
+    return;
+  }
+  state.index=onlineRoom.round_index||0; renderQuestion(); resetRevealGate(); show("screen-quiz");
   document.getElementById("room-badge").classList.remove("hidden"); document.getElementById("room-badge").textContent=`חדר ${onlineRoom.room_code} • ${myPlayer==="ilan"?"אילן":"אילת"}`;
   const q=questions[state.index], responder=q.who, me=playerIndex(myPlayer), amResponder=me===responder;
   const banner=document.getElementById("your-role-banner");
@@ -692,7 +907,7 @@ let state = {
 
 
 function show(id){
-  ["screen-start","screen-quiz","screen-scoreboard","screen-result"].forEach(x =>
+  ["screen-start","screen-quiz","screen-scoreboard","screen-transition","screen-result"].forEach(x =>
     document.getElementById(x).classList.add("hidden")
   );
   document.getElementById(id).classList.remove("hidden");
@@ -765,10 +980,19 @@ async function finishRound(){
   if(onlineMode){
     const q=questions[onlineRoom.round_index], amResponder=playerIndex(myPlayer)===q.who; if(!amResponder){alert("מי שענה על השאלה נותן את הציון.");return;}
     if(state.selectedScore===null){alert("בחרו ציון 0–3 לפני שממשיכים.");return;}
-    const guesser=1-q.who, patch={last_rating:state.selectedScore,guess_text:null,actual_text:null,guess_locked:false,actual_locked:false};
-    if(guesser===0) patch.ilan_score=(onlineRoom.ilan_score||0)+state.selectedScore; else patch.eilat_score=(onlineRoom.eilat_score||0)+state.selectedScore;
-    if(onlineRoom.round_index>=questions.length-1){patch.status="finished";}else{patch.round_index=onlineRoom.round_index+1;}
-    const {error}=await supabaseClient.from("couple_rooms").update(patch).eq("id",onlineRoom.id); if(error) alert(error.message); return;
+    const guesser=1-q.who;
+    const points=state.selectedScore;
+    const scorePatch={last_rating:points};
+    if(guesser===0) scorePatch.ilan_score=(onlineRoom.ilan_score||0)+points;
+    else scorePatch.eilat_score=(onlineRoom.eilat_score||0)+points;
+    const {data,error}=await supabaseClient.from("couple_rooms").update(scorePatch).eq("id",onlineRoom.id).select().single();
+    if(error){alert(error.message);return;}
+    onlineRoom=data;
+    const isFinished=onlineRoom.round_index>=questions.length-1;
+    const nextIndex=onlineRoom.round_index+1;
+    pendingAdvance={points,guesser,nextIndex,isFinished};
+    showTransition(points,guesser,nextIndex,isFinished);
+    return;
   }
   if(state.selectedScore===null){
     alert("בחרו ציון 0–3 לפני שממשיכים.");
