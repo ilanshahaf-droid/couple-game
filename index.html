@@ -370,6 +370,596 @@
       .discovery-actions{grid-template-columns:1fr}
     }
 
+  
+    /* ===== V6 landing redesign ===== */
+    .start-card{
+      padding:0;
+      background:rgba(255,253,252,.96);
+      overflow:hidden;
+    }
+    .start-card::before{display:none}
+    .start-hero{
+      padding:42px 34px 34px;
+      text-align:center;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(159,63,93,.14), transparent 45%),
+        linear-gradient(180deg,#fff9fb,#fffdfc);
+      border-bottom:1px solid #eadde1;
+    }
+    .start-mark{
+      width:76px;height:76px;margin:0 auto 15px;
+      display:grid;place-items:center;
+      font-size:2.4rem;
+      border-radius:26px;
+      background:#fff;
+      border:1px solid #ecd9df;
+      box-shadow:0 14px 35px rgba(112,65,80,.10);
+    }
+    .start-eyebrow{
+      color:var(--accent);
+      font-size:.82rem;
+      font-weight:900;
+      letter-spacing:.08em;
+      margin-bottom:8px;
+    }
+    .start-hero h1{
+      margin:0;
+      font-size:clamp(2.2rem,5vw,3.35rem);
+      line-height:1.08;
+      letter-spacing:-.045em;
+    }
+    .start-subtitle{
+      max-width:560px;
+      margin:16px auto 0;
+      color:var(--muted);
+      font-size:1.08rem;
+      line-height:1.65;
+    }
+    .start-subtitle strong{color:var(--text)}
+    .start-tags{
+      display:flex;
+      justify-content:center;
+      gap:9px;
+      flex-wrap:wrap;
+      margin-top:20px;
+    }
+    .start-tags span{
+      padding:8px 11px;
+      border-radius:999px;
+      background:rgba(255,255,255,.85);
+      border:1px solid #eadce0;
+      font-size:.84rem;
+      font-weight:750;
+      color:#66575e;
+    }
+    .start-section{
+      padding:28px 34px;
+      border-bottom:1px solid #eee3e6;
+    }
+    .section-heading{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:20px;
+      margin-bottom:18px;
+    }
+    .section-heading h2{
+      margin:2px 0 0;
+      font-size:1.4rem;
+    }
+    .section-heading p{
+      margin:0;
+      color:var(--muted);
+      font-size:.9rem;
+      max-width:320px;
+      text-align:left;
+    }
+    .section-step{
+      font-size:.72rem;
+      font-weight:900;
+      letter-spacing:.12em;
+      color:#b07a8b;
+    }
+    .length-cards{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .length-card{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      min-height:118px;
+      padding:16px 10px;
+      background:#fff;
+      border:1.5px solid #e7dadd;
+      color:var(--text);
+      box-shadow:none;
+    }
+    .length-card.selected{
+      border-color:#b95f7a;
+      background:linear-gradient(180deg,#fff9fb,#fff);
+      box-shadow:0 8px 22px rgba(159,63,93,.10);
+    }
+    .length-number{
+      font-size:1.9rem;
+      font-weight:950;
+      line-height:1;
+      color:var(--accent);
+    }
+    .length-title{
+      margin-top:7px;
+      font-size:1rem;
+      font-weight:900;
+    }
+    .length-desc{
+      margin-top:4px;
+      font-size:.78rem;
+      color:var(--muted);
+    }
+    .recommended{
+      position:absolute;
+      top:8px;
+      left:8px;
+      padding:4px 7px;
+      border-radius:999px;
+      background:#f3dfe6;
+      color:#87384f;
+      font-size:.64rem;
+      font-weight:900;
+    }
+    .play-modes{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:14px;
+    }
+    .play-mode{
+      display:flex;
+      flex-direction:column;
+      min-height:250px;
+      padding:22px;
+      border-radius:22px;
+      border:1px solid #e8dade;
+      background:#fff;
+    }
+    .play-mode.featured{
+      background:
+        radial-gradient(circle at 90% 0%, rgba(159,63,93,.08), transparent 35%),
+        linear-gradient(145deg,#fff,#fff7fa);
+      border-color:#ddb7c4;
+      box-shadow:0 10px 28px rgba(104,58,73,.07);
+    }
+    .mode-icon{
+      font-size:2rem;
+      margin-bottom:14px;
+    }
+    .mode-copy{flex:1}
+    .mode-badge{
+      display:inline-block;
+      padding:5px 8px;
+      border-radius:999px;
+      background:#f2dfe5;
+      color:#84334d;
+      font-size:.7rem;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+    .mode-copy h3{
+      margin:0 0 7px;
+      font-size:1.35rem;
+    }
+    .mode-copy p{
+      margin:0;
+      color:var(--muted);
+      font-size:.93rem;
+      line-height:1.6;
+    }
+    .mode-action{margin-top:18px}
+    .mode-main-btn{width:100%}
+    .split-actions{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:8px;
+    }
+    .start-online-panel{
+      display:none;
+      margin:0;
+      border:0;
+      border-radius:0;
+      padding:30px 34px;
+      background:#fbf7f8;
+      box-shadow:none;
+    }
+    .start-online-panel.open{display:block}
+    .online-panel-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      margin-bottom:18px;
+    }
+    .online-panel-head h2{
+      margin:2px 0 5px;
+      font-size:1.4rem;
+    }
+    .online-panel-head p{margin:0}
+    .close-online-btn{
+      flex:0 0 auto;
+      min-height:40px;
+      padding:9px 12px;
+      font-size:.85rem;
+    }
+    .start-online-grid{
+      grid-template-columns:1fr 1fr;
+      margin-top:0;
+    }
+    .start-online-grid label{
+      margin-top:0;
+      font-size:.88rem;
+    }
+    .online-primary-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:14px;
+    }
+    .start-footer-note{
+      padding:18px 28px 22px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.8rem;
+      background:#fffdfc;
+    }
+    @media(max-width:680px){
+      .start-hero{padding:32px 20px 26px}
+      .start-section{padding:24px 18px}
+      .section-heading{
+        display:block;
+      }
+      .section-heading p{
+        margin-top:6px;
+        text-align:right;
+      }
+      .length-cards{gap:8px}
+      .length-card{min-height:108px;padding:13px 6px}
+      .recommended{position:static;margin-bottom:5px}
+      .play-modes{grid-template-columns:1fr}
+      .play-mode{min-height:auto}
+      .start-online-panel{padding:24px 18px}
+      .online-panel-head{display:block}
+      .close-online-btn{margin-top:12px}
+      .start-online-grid{grid-template-columns:1fr}
+      .online-primary-actions{grid-template-columns:1fr}
+    }
+
+  
+    /* ===== V7 final screen ===== */
+    .final-card{
+      padding:0;
+      overflow:hidden;
+      background:#fffdfc;
+    }
+    .final-card::before{display:none}
+    .final-hero{
+      padding:38px 30px 32px;
+      text-align:center;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(159,63,93,.13), transparent 42%),
+        linear-gradient(180deg,#fff8fb,#fffdfc);
+      border-bottom:1px solid #eadde1;
+    }
+    .final-eyebrow{
+      font-size:.76rem;
+      font-weight:900;
+      letter-spacing:.11em;
+      color:var(--accent);
+      margin-bottom:10px;
+    }
+    .final-mark{
+      width:66px;height:66px;
+      display:grid;place-items:center;
+      margin:0 auto 13px;
+      font-size:2rem;
+      border-radius:22px;
+      background:#fff;
+      border:1px solid #ead8de;
+      box-shadow:0 12px 28px rgba(104,58,73,.09);
+    }
+    .final-hero h1{
+      margin:0;
+      font-size:clamp(2rem,5vw,3rem);
+      line-height:1.1;
+      letter-spacing:-.04em;
+    }
+    .final-intro{
+      max-width:610px;
+      margin:14px auto 24px;
+      line-height:1.65;
+    }
+    .result-ring{
+      --pct:0;
+      width:188px;height:188px;
+      margin:0 auto 20px;
+      border-radius:50%;
+      display:grid;place-items:center;
+      background:conic-gradient(var(--accent) calc(var(--pct)*1%), #eee4e7 0);
+      position:relative;
+      box-shadow:0 12px 30px rgba(90,50,64,.08);
+    }
+    .result-ring::before{
+      content:"";
+      position:absolute;
+      inset:11px;
+      border-radius:50%;
+      background:#fffdfc;
+    }
+    .result-ring-inner{
+      position:relative;
+      z-index:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+    }
+    .result-ring .result-score{
+      margin:0;
+      font-size:3rem;
+      line-height:1;
+      color:var(--accent);
+    }
+    .result-ring-max{
+      margin-top:7px;
+      color:var(--muted);
+      font-size:.82rem;
+      font-weight:750;
+    }
+    .final-result-text{
+      max-width:560px;
+      margin:0 auto;
+      color:var(--muted);
+      line-height:1.65;
+    }
+    .final-mini-stats{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:22px;
+    }
+    .mini-stat{
+      min-width:104px;
+      padding:10px 13px;
+      border-radius:16px;
+      background:#fff;
+      border:1px solid #eadce0;
+    }
+    .mini-stat strong{
+      display:block;
+      font-size:1.28rem;
+      color:var(--accent);
+      line-height:1.1;
+    }
+    .mini-stat span{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:.76rem;
+      font-weight:750;
+    }
+    .final-section{
+      padding:28px 30px;
+      border-bottom:1px solid #eee3e6;
+    }
+    .final-section-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:17px;
+    }
+    .final-section-kicker{
+      font-size:.72rem;
+      font-weight:900;
+      letter-spacing:.1em;
+      color:#aa7184;
+      margin-bottom:3px;
+    }
+    .final-section h3{
+      margin:0;
+      font-size:1.35rem;
+    }
+    .together-badge{
+      padding:7px 10px;
+      border-radius:999px;
+      background:#f5e7ec;
+      color:#84334d;
+      font-size:.75rem;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .final-scoreboard{
+      margin:0;
+      gap:14px;
+    }
+    .final-person{
+      position:relative;
+      padding:22px 16px;
+      border:1px solid #e8dadd;
+      box-shadow:none;
+    }
+    .final-avatar{
+      width:42px;height:42px;
+      margin:0 auto 8px;
+      display:grid;place-items:center;
+      border-radius:14px;
+      background:#f7e9ee;
+      color:var(--accent);
+      font-weight:950;
+    }
+    .final-person:nth-child(2) .final-avatar{
+      background:#edf7f1;
+      color:#397054;
+    }
+    .domain-results-modern .domain{
+      margin:10px 0;
+      border-radius:16px;
+      padding:13px 15px;
+      background:#fff;
+    }
+    .discoveries-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+    .discovery-panel{
+      border-radius:20px;
+      padding:18px;
+      border:1px solid var(--border);
+      min-height:170px;
+    }
+    .wow-panel{
+      background:linear-gradient(145deg,#fff9ed,#fff);
+      border-color:#ead9b9;
+    }
+    .talk-panel{
+      background:linear-gradient(145deg,#f8f1f6,#fff);
+      border-color:#e4cfd8;
+    }
+    .discovery-panel-icon{
+      font-size:1.6rem;
+      margin-bottom:6px;
+    }
+    .discovery-panel h4{
+      margin:0 0 10px;
+      font-size:1.08rem;
+    }
+    .discovery-panel .result-list{
+      margin:0;
+    }
+    .discovery-panel .result-item{
+      padding:10px 11px;
+      background:rgba(255,255,255,.78);
+      font-size:.87rem;
+    }
+    .takeaway-section{
+      background:#fbf8f7;
+    }
+    .takeaway-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .takeaway-card{
+      margin:0;
+      padding:16px;
+      border-radius:18px;
+      background:#fff;
+      border:1px solid #e8dadd;
+    }
+    .takeaway-icon{
+      display:block;
+      font-size:1.45rem;
+      margin-bottom:7px;
+    }
+    .takeaway-title{
+      display:block;
+      font-size:.95rem;
+      font-weight:900;
+      margin-bottom:9px;
+    }
+    .takeaway-card textarea{
+      min-height:94px;
+      margin:0;
+      font-size:.9rem!important;
+      line-height:1.5;
+    }
+    .final-actions{
+      display:grid;
+      grid-template-columns:1.25fr 1fr 1fr;
+      gap:10px;
+      padding:24px 30px 30px;
+      background:#fffdfc;
+    }
+    @media(max-width:680px){
+      .final-hero{padding:30px 18px 26px}
+      .result-ring{width:166px;height:166px}
+      .final-section{padding:24px 18px}
+      .final-section-head{display:block}
+      .together-badge{display:inline-block;margin-top:9px}
+      .discoveries-grid{grid-template-columns:1fr}
+      .takeaway-grid{grid-template-columns:1fr}
+      .final-actions{
+        grid-template-columns:1fr;
+        padding:20px 18px 24px;
+      }
+    }
+
+  
+    .interpretation-note{
+      max-width:610px;
+      margin:18px auto 0;
+      padding:12px 15px;
+      border-radius:14px;
+      background:rgba(255,255,255,.72);
+      border:1px solid #eadce0;
+      color:var(--muted);
+      font-size:.8rem;
+      line-height:1.55;
+    }
+    .interpretation-note strong{color:var(--text)}
+
+  
+    /* ===== V8 couple profile ===== */
+    .profile-section{
+      background:linear-gradient(180deg,#fffdfc,#fbf8f7);
+    }
+    .profile-intro{
+      margin:-5px 0 18px;
+      color:var(--muted);
+      line-height:1.6;
+      max-width:650px;
+    }
+    .profile-cards{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+    .profile-card{
+      padding:16px;
+      border-radius:18px;
+      background:#fff;
+      border:1px solid #e8dadd;
+    }
+    .profile-card-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:9px;
+    }
+    .profile-card-title{font-weight:900}
+    .profile-card-pct{font-weight:950;color:var(--accent)}
+    .profile-card-text{
+      margin-top:9px;
+      color:var(--muted);
+      font-size:.84rem;
+      line-height:1.5;
+    }
+    .profile-insight{
+      margin-top:16px;
+      padding:17px 18px;
+      border-radius:18px;
+      background:#f6e9ee;
+      border:1px solid #e3c9d2;
+      line-height:1.65;
+    }
+    .profile-insight strong{color:var(--accent)}
+    @media(max-width:680px){
+      .profile-cards{grid-template-columns:1fr}
+    }
+
   </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -377,62 +967,128 @@
 <body>
 <div class="app">
 
-  <div class="card" id="screen-start">
-    <div class="center">
-      <div class="heart">💞</div>
-      <h1>אילן ואילת – כמה אנחנו באמת מכירים?</h1>
-      <p class="muted">בכל שאלה אחד מנחש והשני עונה. כל אחד כותב מהטלפון שלו — ורק אחרי ששתי התשובות נשמרו הן נחשפות יחד.</p>
+  
+  <div class="card start-card" id="screen-start">
+    <div class="start-hero">
+      <div class="start-mark">💞</div>
+      <div class="start-eyebrow">משחק זוגי לאילן ואילת</div>
+      <h1>כמה אנחנו באמת מכירים?</h1>
+      <p class="start-subtitle">
+        ערב אחד, כמה שאלות טובות, והרבה רגעים של
+        <strong>“וואו, לא ידעתי”</strong>.
+      </p>
+      <div class="start-tags">
+        <span>🤍 בלי מבחנים</span>
+        <span>🔒 תשובות נסתרות</span>
+        <span>✨ גילויים קטנים</span>
+      </div>
     </div>
 
-    <div class="notice">
-      במשחק בשני טלפונים התשובות והניקוד מסתנכרנים בין שני המכשירים.
-    </div>
-    <div class="game-length-box">
-      <div>
-        <div class="game-length-title">כמה זמן בא לכם לשחק?</div>
-        <div class="muted">אפשר להתחיל קצר ולשמור את הגרסה המלאה לערב אחר.</div>
+    <div class="start-section">
+      <div class="section-heading">
+        <div>
+          <div class="section-step">01</div>
+          <h2>כמה זמן בא לכם לשחק?</h2>
+        </div>
+        <p>אפשר להתחיל קצר ולשמור את הגרסה המלאה לערב אחר.</p>
       </div>
-      <select id="game-length-select" aria-label="אורך המשחק">
+
+      <div class="length-cards" id="length-cards">
+        <button type="button" class="length-card" data-length="12" onclick="chooseLength(12)">
+          <span class="length-number">12</span>
+          <span class="length-title">קצר</span>
+          <span class="length-desc">טעימה מהירה</span>
+        </button>
+        <button type="button" class="length-card selected" data-length="20" onclick="chooseLength(20)">
+          <span class="length-number">20</span>
+          <span class="length-title">בינוני</span>
+          <span class="length-desc">האיזון המומלץ</span>
+          <span class="recommended">מומלץ</span>
+        </button>
+        <button type="button" class="length-card" data-length="38" onclick="chooseLength(38)">
+          <span class="length-number">38</span>
+          <span class="length-title">מלא</span>
+          <span class="length-desc">כל השאלות</span>
+        </button>
+      </div>
+      <select id="game-length-select" class="hidden" aria-label="אורך המשחק">
         <option value="12">קצר · 12 שאלות</option>
         <option value="20" selected>בינוני · 20 שאלות</option>
         <option value="38">מלא · 38 שאלות</option>
       </select>
     </div>
 
-    <div class="mode-title">איך תרצו לשחק?</div>
-    <div class="mode-cards">
-      <div class="mode-card">
-        <h3>📱 יחד — בשני טלפונים</h3>
-        <p>כל אחד כותב בטלפון שלו. התשובות נשמרות בסוד עד רגע החשיפה.</p>
-        <div class="actions"><button class="primary" type="button" onclick="document.querySelector('.online-box').scrollIntoView({behavior:'smooth',block:'center'})">משחק בשני טלפונים</button></div>
+    <div class="start-section">
+      <div class="section-heading">
+        <div>
+          <div class="section-step">02</div>
+          <h2>איך משחקים?</h2>
+        </div>
+        <p>בחרו את הדרך שנוחה לכם הערב.</p>
       </div>
-      <div class="mode-card">
-        <h3>🤝 יחד — בטלפון אחד</h3>
-        <p>מעבירים את הטלפון ביניכם ומשחקים באותו מכשיר.</p>
-        <div class="actions">
-          <button class="secondary" onclick="startQuiz()">התחלה</button>
-          <button class="ghost" onclick="resumeQuiz()">המשך משחק</button>
+
+      <div class="play-modes">
+        <div class="play-mode featured">
+          <div class="mode-icon">📱📱</div>
+          <div class="mode-copy">
+            <div class="mode-badge">החוויה המלאה</div>
+            <h3>שני טלפונים</h3>
+            <p>כל אחד עונה מהטלפון שלו. אף אחד לא רואה את תשובת השני עד רגע החשיפה.</p>
+          </div>
+          <div class="mode-action">
+            <button class="primary mode-main-btn" type="button" onclick="openOnlineSetup()">בואו נתחיל</button>
+          </div>
+        </div>
+
+        <div class="play-mode compact">
+          <div class="mode-icon">🤝</div>
+          <div class="mode-copy">
+            <h3>טלפון אחד</h3>
+            <p>מעבירים את הטלפון ביניכם ומשחקים יחד על אותו מכשיר.</p>
+          </div>
+          <div class="mode-action split-actions">
+            <button class="secondary" onclick="startQuiz()">משחק חדש</button>
+            <button class="ghost" onclick="resumeQuiz()">המשך משחק</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="online-box">
-      <h3>חדר משותף</h3>
-      <p class="muted">בכל טלפון בחרו מי משחק בו. אילן יכול ליצור חדר, ואילת להצטרף עם הקוד.</p>
-      <div class="online-grid">
-        <select id="player-select"><option value="ilan">אני אילן</option><option value="eilat">אני אילת</option></select>
-        <input id="room-code-input" maxlength="6" placeholder="קוד חדר (להצטרפות)">
+    <div class="online-box start-online-panel" id="online-setup">
+      <div class="online-panel-head">
+        <div>
+          <div class="section-step">03</div>
+          <h2>פותחים חדר משותף</h2>
+          <p class="muted">אחד יוצר חדר, והשני מצטרף עם קוד קצר או דרך קישור ההזמנה.</p>
+        </div>
+        <button class="ghost close-online-btn" type="button" onclick="closeOnlineSetup()">סגירה</button>
       </div>
-      <div class="actions">
-        <button class="primary" onclick="createOnlineRoom()">יצירת חדר חדש</button>
-        <button class="secondary" onclick="joinOnlineRoom()">הצטרפות לחדר</button>
+
+      <div class="online-grid start-online-grid">
+        <div>
+          <label for="player-select">מי משחק בטלפון הזה?</label>
+          <select id="player-select">
+            <option value="ilan">אני אילן</option>
+            <option value="eilat">אני אילת</option>
+          </select>
+        </div>
+        <div>
+          <label for="room-code-input">יש לכם כבר קוד?</label>
+          <input id="room-code-input" maxlength="6" placeholder="לדוגמה ABC123">
+        </div>
       </div>
+
+      <div class="online-primary-actions">
+        <button class="primary" onclick="createOnlineRoom()">＋ יצירת חדר חדש</button>
+        <button class="secondary" onclick="joinOnlineRoom()">כניסה עם קוד</button>
+      </div>
+
       <div id="online-status" class="muted center"></div>
       <div id="invite-link-info"></div>
-      <div id="share-room-actions" class="actions hidden">
-        <button class="primary" onclick="shareRoomInvite()">📤 שיתוף הזמנה</button>
-        <button class="ghost" onclick="copyRoomCode()">📋 העתקת הקוד</button>
-      </div>
+    </div>
+
+    <div class="start-footer-note">
+      המשחק הוא כלי לשיחה ולסקרנות זוגית — לא מבחן ולא אבחון.
     </div>
   </div>
 
@@ -464,23 +1120,24 @@
     <div class="your-role-banner hidden" id="your-role-banner"></div>
     <h2 id="turn-title" class="turn-title-subtle"></h2>
     <div class="question" id="question-text"></div>
-
     <div id="phase-guess">
-      <p class="muted">התשובה של המנחש נשמרת בסוד עד שלוחצים על חשיפה.</p>
+      <p class="muted" id="guess-phase-help">התשובה של המנחש נשמרת בסוד עד שלב החשיפה.</p>
 
       <label for="guess-text" id="guess-label">התשובה של המנחש</label>
       <textarea id="guess-text" placeholder="כתבו כאן את הניחוש שלכם..."></textarea>
-      </div>
-
 
       <div id="online-answer-wrap" class="hidden">
-        <label for="actual-text">התשובה של מי שעונה</label>
-        <textarea id="actual-text" placeholder="כתבו כאן את התשובה שלכם..."></textarea>
-        <div class="actions"><button class="secondary" onclick="submitOnlineAnswer()">שמירת התשובה שלי</button></div>
+        <label for="actual-text" id="actual-label">התשובה האמיתית</label>
+        <textarea id="actual-text" placeholder="כתבו כאן את התשובה האמיתית..."></textarea>
+        <div class="actions">
+          <button class="secondary" id="actual-submit-btn" onclick="submitAnswer()">נעלתי את התשובה</button>
+        </div>
       </div>
+
       <div id="online-wait" class="waiting hidden">ממתינים לבן/בת הזוג…</div>
-      <div class="actions">
-        <button class="primary" id="reveal-btn" onclick="revealAnswerPhase()">חשיפת התשובה</button>
+
+      <div class="actions" id="guess-submit-actions">
+        <button class="primary" id="reveal-btn" onclick="revealAnswerPhase()">נעלתי את הניחוש</button>
       </div>
     </div>
 
@@ -585,37 +1242,135 @@
     </div>
   </div>
 
-  <div class="card hidden" id="screen-result">
-    <div class="center">
-      <div class="heart">❤️</div>
-      <h1>המדד הזוגי של אילן ואילת</h1>
-      <div class="result-score" id="result-score"></div>
-      <div class="muted" id="result-max"></div>
+  <div class="card hidden final-card" id="screen-result">
+    <div class="final-hero">
+      <div class="final-eyebrow">סיימתם את המשחק יחד</div>
+      <div class="final-mark">❤️</div>
+      <h1>מה גילינו עלינו הערב?</h1>
+      <p class="muted final-intro">המספר הוא רק חלק מהמשחק. הרגעים שבהם הופתעתם, דייקתם או רציתם לעצור ולדבר — הם החלק המעניין באמת.</p>
+
+      <div class="result-ring" id="result-ring">
+        <div class="result-ring-inner">
+          <div class="result-score" id="result-score">0</div>
+          <div class="result-ring-max" id="result-max">מתוך 0</div>
+        </div>
+      </div>
+
       <h2 id="result-title"></h2>
-      <p id="result-text"></p>
-    </div>
-
-    <h3>ניקוד אישי כניחוש</h3>
-    <div class="scoreboard">
-      <div class="score-card">
-        <div class="score-name">אילן</div>
-        <div class="score-num" id="final-ilan-score">0</div>
+      <p id="result-text" class="final-result-text"></p>
+      <div class="interpretation-note">
+        <strong>חשוב לזכור:</strong> הניקוד משקף את מידת ההתאמה בין הניחושים לתשובות במשחק הזה בלבד. הוא אינו מדד לאהבה, התאמה או איכות הזוגיות.
       </div>
-      <div class="score-card">
-        <div class="score-name">אילת</div>
-        <div class="score-num" id="final-eilat-score">0</div>
+
+      <div class="final-mini-stats">
+        <div class="mini-stat"><strong id="final-question-count">0</strong><span>שאלות</span></div>
+        <div class="mini-stat"><strong id="final-wow-count">0</strong><span>הפתעות</span></div>
+        <div class="mini-stat"><strong id="final-talk-count">0</strong><span>נושאים לחזרה</span></div>
       </div>
     </div>
 
-    <h3>פירוט לפי תחומים</h3>
-    <div id="domain-results"></div>
+    <section class="final-section">
+      <div class="final-section-head">
+        <div>
+          <div class="final-section-kicker">הניקוד המשחקי</div>
+          <h3>כמה קלעתם זה לזו?</h3>
+        </div>
+        <div class="together-badge">הציון הוא של הזוג</div>
+      </div>
 
-    <h3>מה גילינו הערב?</h3>
-    <div id="surprise-results"></div>
+      <div class="scoreboard final-scoreboard">
+        <div class="score-card final-person">
+          <div class="final-avatar">א</div>
+          <div class="score-name">אילן</div>
+          <div class="score-num" id="final-ilan-score">0</div>
+          <div class="muted">נקודות כניחוש</div>
+        </div>
+        <div class="score-card final-person">
+          <div class="final-avatar">א</div>
+          <div class="score-name">אילת</div>
+          <div class="score-num" id="final-eilat-score">0</div>
+          <div class="muted">נקודות כניחוש</div>
+        </div>
+      </div>
+    </section>
 
-    <div class="actions">
-      <button class="primary" onclick="restartQuiz()">מתחילים מחדש</button>
-      <button class="secondary" onclick="window.print()">הדפסת התוצאה</button>
+    <section class="final-section" id="final-domain-section">
+      <div class="final-section-head">
+        <div>
+          <div class="final-section-kicker">מפת המשחק</div>
+          <h3>איפה הכרתם זה את זו הכי טוב?</h3>
+        </div>
+      </div>
+      <div id="domain-results" class="domain-results-modern"></div>
+    </section>
+
+    <section class="final-section profile-section" id="couple-profile-section">
+      <div class="final-section-head">
+        <div>
+          <div class="final-section-kicker">הפרופיל הזוגי שלכם</div>
+          <h3>איך נראית מפת ההיכרות ביניכם?</h3>
+        </div>
+      </div>
+      <p class="profile-intro">הפרופיל מבוסס על הציונים של כל שאלה במשחק המשותף. הוא מתאר באילו תחומים נטיתם לדייק יותר בניחושים, ובאילו תחומים נפתח יותר מקום להפתעה ולסקרנות.</p>
+      <div id="couple-profile-cards" class="profile-cards"></div>
+      <div id="couple-profile-insight" class="profile-insight"></div>
+    </section>
+
+    <section class="final-section">
+      <div class="final-section-head">
+        <div>
+          <div class="final-section-kicker">החלק החשוב באמת</div>
+          <h3>מה נשאר איתנו מהערב?</h3>
+        </div>
+      </div>
+
+      <div class="discoveries-grid">
+        <div class="discovery-panel wow-panel">
+          <div class="discovery-panel-icon">✨</div>
+          <h4>וואו, לא ידעתי</h4>
+          <div id="final-wow-list" class="result-list"></div>
+        </div>
+        <div class="discovery-panel talk-panel">
+          <div class="discovery-panel-icon">💬</div>
+          <h4>נחזור לדבר על זה</h4>
+          <div id="final-talk-list" class="result-list"></div>
+        </div>
+      </div>
+
+      <div id="surprise-results" class="hidden"></div>
+    </section>
+
+    <section class="final-section takeaway-section">
+      <div class="final-section-head">
+        <div>
+          <div class="final-section-kicker">לפני שסוגרים</div>
+          <h3>שלושה דברים לקחת איתנו</h3>
+        </div>
+      </div>
+
+      <div class="takeaway-grid">
+        <label class="takeaway-card">
+          <span class="takeaway-icon">💗</span>
+          <span class="takeaway-title">הכוח שלנו</span>
+          <textarea id="takeaway-strength" placeholder="משהו שעובד טוב בינינו..."></textarea>
+        </label>
+        <label class="takeaway-card">
+          <span class="takeaway-icon">💡</span>
+          <span class="takeaway-title">משהו חדש שגילינו</span>
+          <textarea id="takeaway-discovery" placeholder="משהו שלא ידענו קודם..."></textarea>
+        </label>
+        <label class="takeaway-card">
+          <span class="takeaway-icon">🌱</span>
+          <span class="takeaway-title">צעד קטן להמשך</span>
+          <textarea id="takeaway-next" placeholder="משהו קטן שנרצה לעשות יחד..."></textarea>
+        </label>
+      </div>
+    </section>
+
+    <div class="final-actions">
+      <button class="primary" type="button" onclick="shareFinalSummary()">📤 שיתוף הסיכום</button>
+      <button class="secondary" type="button" onclick="restartQuiz()">משחק חדש</button>
+      <button class="ghost" type="button" onclick="window.print()">הדפסת הסיכום</button>
     </div>
   </div>
 
@@ -754,21 +1509,28 @@ function applyInviteFromUrl(){
       if(sel) sel.value=player;
     }
     const info=document.getElementById("invite-link-info");
-    if(info) info.innerHTML=`<div class="joined-highlight">הגעתם דרך הזמנה 💞 קוד החדר כבר הוזן. לחצו על “הצטרפות לחדר”.</div>`;
-    setTimeout(()=>document.querySelector(".online-box")?.scrollIntoView({behavior:"smooth",block:"center"}),250);
+    if(info) info.innerHTML=`<div class="joined-highlight">הגעתם דרך הזמנה 💞 קוד החדר כבר הוזן. לחצו על “כניסה עם קוד”.</div>`;
+    openOnlineSetup();
   }
 }
 window.addEventListener("DOMContentLoaded",applyInviteFromUrl);
 
 
 async function createOnlineRoom(){
+  openOnlineSetup();
   try{
     await ensureAnon(); myPlayer=document.getElementById("player-select").value;
-    setGameLength(document.getElementById("game-length-select")?.value||20);
+    setGameLength(document.getElementById("game-length-select")?.value||20, true);
     loadMarkers();
     const code=makeRoomCode();
-    const row={room_code:code,status:roomStatus("lobby"),host_player:myPlayer,ilan_online:myPlayer==="ilan",eilat_online:myPlayer==="eilat",round_index:0,guess_text:null,actual_text:null,guess_locked:false,actual_locked:false,last_rating:null,ilan_score:0,eilat_score:0};
-    const {data,error}=await supabaseClient.from("couple_rooms").insert(row).select().single(); if(error) throw error;
+    const row={room_code:code,status:roomStatus("lobby"),host_player:myPlayer,ilan_online:myPlayer==="ilan",eilat_online:myPlayer==="eilat",round_index:0,guess_text:null,actual_text:null,guess_locked:false,actual_locked:false,last_rating:null,ilan_score:0,eilat_score:0,score_history:[]};
+    const {data,error}=await supabaseClient.from("couple_rooms").insert(row).select().single();
+    if(error){
+      if(String(error.message||"").includes("score_history")){
+        throw new Error("חסר שדה score_history ב-Supabase. יש להריץ את עדכון הטבלה החד-פעמי.");
+      }
+      throw error;
+    }
     onlineRoom=data; onlineMode=true; markers={wow:{},talk:{}}; saveMarkers(); document.getElementById("room-code-input").value=code;
     await subscribeRoom(); showOnlineStatus(`החדר נוצר. הקוד הוא ${code}. אפשר לשתף עכשיו קישור ישיר לבן/בת הזוג.`); showShareRoomActions();
   }catch(e){ alert("לא הצלחנו ליצור חדר: "+e.message); }
@@ -823,12 +1585,13 @@ function applyInviteFromUrl(){
 }
 
 async function joinOnlineRoom(){
+  openOnlineSetup();
   try{
     await ensureAnon(); myPlayer=document.getElementById("player-select").value;
     const code=document.getElementById("room-code-input").value.trim().toUpperCase(); if(!code){alert("הקלידו קוד חדר.");return;}
     const {data,error}=await supabaseClient.from("couple_rooms").select("*").eq("room_code",code).single(); if(error) throw error;
     onlineRoom=data; onlineMode=true;
-    const rs=parseRoomStatus(data.status); setGameLength(rs.length); loadMarkers();
+    const rs=parseRoomStatus(data.status); applyRoomQuestionSet(rs); loadMarkers();
     const patch=myPlayer==="ilan"?{ilan_online:true}:{eilat_online:true};
     await supabaseClient.from("couple_rooms").update(patch).eq("id",data.id);
     await subscribeRoom(); showOnlineStatus(`התחברתם לחדר ${code}.`); document.getElementById("invite-link-info").innerHTML=""; await refreshRoom();
@@ -843,12 +1606,12 @@ async function subscribeRoom(){
 async function refreshRoom(){const {data}=await supabaseClient.from("couple_rooms").select("*").eq("id",onlineRoom.id).single(); if(data){onlineRoom=data;syncOnlineUI();}}
 async function startOnlineIfReady(){
   if(!onlineRoom) return;
-  const rs=parseRoomStatus(onlineRoom.status); setGameLength(rs.length);
+  const rs=parseRoomStatus(onlineRoom.status); applyRoomQuestionSet(rs);
   if(onlineRoom.ilan_online && onlineRoom.eilat_online && rs.base==="lobby") await supabaseClient.from("couple_rooms").update({status:roomStatus("playing")}).eq("id",onlineRoom.id);
 }
 async function syncOnlineUI(){
   if(!onlineMode||!onlineRoom)return;
-  const rs=parseRoomStatus(onlineRoom.status); setGameLength(rs.length);
+  const rs=parseRoomStatus(onlineRoom.status); applyRoomQuestionSet(rs);
   if(rs.base==="lobby"){
     show("screen-start"); showOnlineStatus(onlineRoom.ilan_online&&onlineRoom.eilat_online?"שניכם מחוברים — מתחילים!":"ממתינים לטלפון השני…");
     if(onlineRoom.ilan_online&&onlineRoom.eilat_online) startOnlineIfReady(); return;
@@ -904,6 +1667,45 @@ async function syncOnlineUI(){
     document.querySelectorAll(".score-btn").forEach(b=>b.disabled=!amResponder);
   }
 }
+
+async function submitAnswer(){
+  if(onlineMode) return submitOnlineAnswer();
+  return submitLocalAnswer();
+}
+
+function submitLocalAnswer(){
+  const q=questions[state.index];
+  const responder=q.who;
+  const guesser=1-responder;
+  const actual=document.getElementById("actual-text").value.trim();
+
+  if(!actual){
+    alert("יש לכתוב את התשובה האמיתית לפני החשיפה.");
+    return;
+  }
+
+  state.actuals=state.actuals||[];
+  state.actuals[state.index]=actual;
+  saveState();
+
+  document.getElementById("phase-guess").classList.add("hidden");
+  document.getElementById("phase-score").classList.remove("hidden");
+  document.getElementById("online-reveal-design").classList.remove("hidden");
+
+  document.getElementById("reveal-guess-label").textContent=`הניחוש של ${names[guesser]}`;
+  document.getElementById("reveal-answer-label").textContent=`התשובה האמיתית של ${names[responder]}`;
+  document.getElementById("reveal-guesser-name").textContent=names[guesser];
+  document.getElementById("reveal-responder-name").textContent=names[responder];
+  document.getElementById("reveal-guess-text").textContent=state.guesses[state.index]||"—";
+  document.getElementById("reveal-actual-text").textContent=actual;
+
+  document.getElementById("score-instruction").textContent=
+    `${names[responder]} מדרג/ת עכשיו עד כמה הניחוש של ${names[guesser]} היה קרוב לתשובה.`;
+
+  document.querySelectorAll(".score-btn").forEach(b=>b.disabled=false);
+  resetRevealGate();
+}
+
 async function submitOnlineAnswer(){
   if(!onlineMode)return; const v=document.getElementById("actual-text").value.trim(); if(!v){alert("כתבו תשובה לפני השמירה.");return;}
   const {error}=await supabaseClient.from("couple_rooms").update({actual_text:v,actual_locked:true}).eq("id",onlineRoom.id); if(error) alert(error.message);
@@ -912,21 +1714,174 @@ async function submitOnlineGuess(){
   const v=document.getElementById("guess-text").value.trim(); if(!v){alert("כתבו ניחוש לפני השמירה.");return false;}
   const {error}=await supabaseClient.from("couple_rooms").update({guess_text:v,guess_locked:true}).eq("id",onlineRoom.id); if(error){alert(error.message);return false;} return true;
 }
+
+
+
+function getOnlineScoreHistory(){
+  if(!onlineMode || !onlineRoom) return [];
+  const h=onlineRoom.score_history;
+  if(Array.isArray(h)) return h;
+  if(typeof h==="string"){
+    try{ const parsed=JSON.parse(h); return Array.isArray(parsed)?parsed:[]; }catch(e){ return []; }
+  }
+  return [];
+}
+function domainProfileSource(){
+  if(onlineMode && onlineRoom){
+    return getOnlineScoreHistory().map(item=>({
+      domain:item.domain,
+      score:Number(item.score)||0
+    }));
+  }
+  return questions.map((q,i)=>({
+    domain:q.d,
+    score:Number(state.scores[i])
+  })).filter(x=>Number.isFinite(x.score));
+}
+function domainProfileData(){
+  const map={};
+  domainProfileSource().forEach(item=>{
+    if(!item.domain || !Number.isFinite(item.score)) return;
+    if(!map[item.domain]) map[item.domain]={score:0,max:0,count:0};
+    map[item.domain].score+=item.score;
+    map[item.domain].max+=3;
+    map[item.domain].count++;
+  });
+  return Object.entries(map).map(([domain,v])=>({
+    domain,...v,pct:v.max?Math.round(v.score/v.max*100):0
+  })).sort((a,b)=>b.pct-a.pct);
+}
+function profileText(pct){
+  if(pct>=80) return "כאן הייתה ביניכם התאמה גבוהה מאוד — נראה שאתם קוראים היטב זה את זו בתחום הזה.";
+  if(pct>=65) return "יש כאן היכרות חזקה, לצד כמה פרטים שעוד יכולים להפתיע.";
+  if(pct>=45) return "זה תחום מעורב: בחלק מהדברים דייקתם ובאחרים נפתח מקום לשאלות חדשות.";
+  return "כאן היו יותר פערים בין הניחוש לתשובה — מקום טוב במיוחד לסקרנות ולשיחה.";
+}
+function renderCoupleProfile(){
+  const box=document.getElementById("couple-profile-cards");
+  const insight=document.getElementById("couple-profile-insight");
+  const data=domainProfileData();
+
+  if(!data.length){
+    box.innerHTML=`<div class="result-empty">הפרופיל המפורט זמין במשחק בטלפון אחד, שבו נשמר ניקוד לכל שאלה.</div>`;
+    insight.innerHTML="";
+    return;
+  }
+
+  box.innerHTML=data.map(x=>`
+    <div class="profile-card">
+      <div class="profile-card-top">
+        <span class="profile-card-title">${escapeHtml(x.domain)}</span>
+        <span class="profile-card-pct">${x.pct}%</span>
+      </div>
+      <div class="mini-bar"><div style="width:${x.pct}%"></div></div>
+      <div class="profile-card-text">${profileText(x.pct)}</div>
+    </div>
+  `).join("");
+
+  const strongest=data[0], curious=data[data.length-1];
+  if(data.length>1){
+    insight.innerHTML=`<strong>התמונה שעולה מהמשחק:</strong> התחום שבו הייתם הכי מתואמים הפעם הוא “${escapeHtml(strongest.domain)}”. לעומת זאת, “${escapeHtml(curious.domain)}” השאיר יותר מקום להפתעות. זה לא אומר שזה תחום חלש בזוגיות — רק שבשאלות שעלו הערב היה קשה יותר לנחש זה את זו, ולכן אולי דווקא שם מסתתרת שיחה מעניינת.`;
+  }else{
+    insight.innerHTML=`המשחק הזה התמקד בעיקר בתחום “${escapeHtml(strongest.domain)}”. במשחק הבא יופיע שילוב אחר של שאלות ותקבלו תמונה רחבה יותר.`;
+  }
+}
+
+function finalResultCopy(total,max){
+  const pct=max?total/max:0;
+
+  if(pct>=.88) return {
+    title:"אתם מכירים זה את זו לעומק",
+    text:"לאורך המשחק הצלחתם לדייק שוב ושוב במה שהשני חושב, מרגיש, מעדיף וזוכר. זה מצביע על הרבה היכרות שנבנתה לאורך הדרך ועל תשומת לב לפרטים הקטנים. האתגר שלכם הוא דווקא לא להניח שכבר יודעים הכול: גם בקשר קרוב אנשים משתנים, ולכן כדאי להמשיך לשאול ולהפתיע זה את זו."
+  };
+  if(pct>=.74) return {
+    title:"יש ביניכם היכרות חזקה מאוד",
+    text:"ברוב השאלות הצלחתם להתקרב מאוד לתשובות זה של זו. נראה שיש לכם מפה טובה של העולם של בן או בת הזוג, לצד כמה אזורים שבהם עדיין אפשר לגלות דברים חדשים. הפערים הקטנים שעלו במשחק הם הזדמנות מצוינת לסקרנות ולא סימן שמשהו חסר."
+  };
+  if(pct>=.60) return {
+    title:"אתם מכירים היטב — ועדיין מצליחים להפתיע",
+    text:"יש ביניכם בסיס משמעותי של היכרות, אבל המשחק גם חשף מקומות שבהם הניחוש והתשובה לא תמיד נפגשו. זה שילוב מעניין: מצד אחד הרבה ידע משותף, ומצד שני מספיק מרחב כדי להמשיך לגלות זה את זו. שווה במיוחד לחזור לרגעים שסימנתם כ'וואו, לא ידעתי'."
+  };
+  if(pct>=.45) return {
+    title:"יש ביניכם היכרות — ויש עוד עולם לגלות",
+    text:"בחלק מהשאלות הייתם קרובים מאוד ובאחרות נפתח פער בין מה שחשבתם לבין מה שהשני באמת ענה. דווקא הפערים האלה יכולים להיות החלק הכי מעניין במשחק: הם מראים איפה כדאי לשאול עוד שאלה, להקשיב בלי לנחש מראש ולבדוק מה השתנה לאורך הזמן."
+  };
+  if(pct>=.30) return {
+    title:"הערב הזה פתח כמה דלתות חדשות",
+    text:"היו לא מעט תשובות שהפתיעו אתכם או היו שונות מהניחוש. זה לא ציון לאיכות הקשר, אלא סימן לכך שיש ביניכם נושאים שעוד לא קיבלו מספיק מקום בשיחה — או שפשוט השתנו עם הזמן. במקום לנסות 'להשתפר בציון', נסו לבחור שניים או שלושה רגעים מסקרנים ולדבר עליהם."
+  };
+  return {
+    title:"יש לכם הזדמנות להכיר מחדש",
+    text:"המשחק גילה פערים רבים בין הניחושים לתשובות. חשוב לזכור שהמשחק מודד עד כמה הצלחתם לנחש תשובות מסוימות ברגע מסוים — לא אהבה, קרבה או איכות זוגיות. אפשר להשתמש בתוצאה כהזמנה להתחיל מחדש בסקרנות: פחות להניח מה השני יענה, ויותר לשאול, להקשיב ולגלות."
+  };
+}
+function renderFinalHeader(total,max,wowCount,talkCount){
+  const pct=max?Math.round(total/max*100):0;
+  const copy=finalResultCopy(total,max);
+  document.getElementById("result-score").textContent=total;
+  document.getElementById("result-max").textContent=`מתוך ${max}`;
+  document.getElementById("result-ring").style.setProperty("--pct",pct);
+  document.getElementById("result-title").textContent=copy.title;
+  document.getElementById("result-text").textContent=copy.text;
+  document.getElementById("final-question-count").textContent=questions.length;
+  document.getElementById("final-wow-count").textContent=wowCount;
+  document.getElementById("final-talk-count").textContent=talkCount;
+}
+function renderMarkerLists(wow,talk){
+  const wowBox=document.getElementById("final-wow-list");
+  const talkBox=document.getElementById("final-talk-list");
+  wowBox.innerHTML=wow.length
+    ? wow.map(i=>`<div class="result-item">${escapeHtml(questions[i].q)}</div>`).join("")
+    : `<div class="result-empty">לא סימנתם רגעי “וואו” במכשיר הזה.</div>`;
+  talkBox.innerHTML=talk.length
+    ? talk.map(i=>`<div class="result-item">${escapeHtml(questions[i].q)}</div>`).join("")
+    : `<div class="result-empty">לא סימנתם נושאים לחזרה במכשיר הזה.</div>`;
+}
+function finalSummaryText(){
+  const total=document.getElementById("result-score")?.textContent||"";
+  const max=document.getElementById("result-max")?.textContent||"";
+  const strength=document.getElementById("takeaway-strength")?.value.trim();
+  const discovery=document.getElementById("takeaway-discovery")?.value.trim();
+  const next=document.getElementById("takeaway-next")?.value.trim();
+  let msg=`💞 סיימנו את המשחק הזוגי שלנו\nהניקוד המשותף: ${total} ${max}`;
+  if(strength) msg+=`\n\n💗 הכוח שלנו: ${strength}`;
+  if(discovery) msg+=`\n💡 משהו חדש שגילינו: ${discovery}`;
+  if(next) msg+=`\n🌱 הצעד הקטן שלנו: ${next}`;
+  msg+=`\n\nhttps://ilanshahaf-droid.github.io/couple-game/`;
+  return msg;
+}
+async function shareFinalSummary(){
+  const text=finalSummaryText();
+  if(navigator.share){
+    try{
+      await navigator.share({title:"הסיכום הזוגי שלנו",text});
+      return;
+    }catch(e){
+      if(e && e.name==="AbortError") return;
+    }
+  }
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,"_blank");
+}
+
+
 async function showOnlineResults(){
-  show("screen-result"); const total=(onlineRoom.ilan_score||0)+(onlineRoom.eilat_score||0), max=questions.length*3;
-  document.getElementById("result-score").textContent=total; document.getElementById("result-max").textContent=`מתוך ${max} נקודות`;
-  document.getElementById("final-ilan-score").textContent=onlineRoom.ilan_score||0; document.getElementById("final-eilat-score").textContent=onlineRoom.eilat_score||0;
-  document.getElementById("result-title").textContent="סיימתם את המשחק יחד 💞";
-  document.getElementById("result-text").textContent=`סיימתם ${questions.length} שאלות. הציון הוא חלק מהמשחק — הדברים שגיליתם חשובים יותר.`;
-  document.getElementById("domain-results").innerHTML="";
+  show("screen-result");
+  const total=(onlineRoom.ilan_score||0)+(onlineRoom.eilat_score||0);
+  const max=questions.length*3;
+
+  document.getElementById("final-ilan-score").textContent=onlineRoom.ilan_score||0;
+  document.getElementById("final-eilat-score").textContent=onlineRoom.eilat_score||0;
+
   loadMarkers();
   const wow=markerItems("wow"), talk=markerItems("talk");
-  const sr=document.getElementById("surprise-results");
-  sr.innerHTML=`
-    <h3>✨ וואו, לא ידעתי</h3>
-    <div class="result-list">${wow.length?wow.map(i=>`<div class="result-item">${escapeHtml(questions[i].q)}</div>`).join(""):`<div class="result-empty">לא סימנתם תשובות בקטגוריה הזו במכשיר הזה.</div>`}</div>
-    <h3>💬 נחזור לדבר על זה</h3>
-    <div class="result-list">${talk.length?talk.map(i=>`<div class="result-item">${escapeHtml(questions[i].q)}</div>`).join(""):`<div class="result-empty">לא סימנתם נושאים לחזרה במכשיר הזה.</div>`}</div>`;
+  renderFinalHeader(total,max,wow.length,talk.length);
+  renderMarkerLists(wow,talk);
+
+  document.getElementById("couple-profile-section").classList.remove("hidden");
+  renderCoupleProfile();
+
+  // במשחק בשני טלפונים הפרופיל מבוסס על היסטוריית הציונים שנשמרה בחדר.
+  document.getElementById("final-domain-section").classList.add("hidden");
 }
 
 const names = ["אילן","אילת"];
@@ -973,28 +1928,110 @@ const allQuestions = [
   {d:"הבחירה זה בזו", who:1, q:"מה החלום הזוגי של אילת לשנים הקרובות?"},
   {d:"הבחירה זה בזו", who:0, q:"איפה אילן היה רוצה שתהיו כזוג בעוד חמש שנים?"},
   {d:"הבחירה זה בזו", who:1, q:"מה אילת הייתה רוצה שתשמרו ביניכם גם כשתהיו הרבה יותר מבוגרים?"},
-  {d:"הבחירה זה בזו", who:0, q:"אם אילן היה צריך להסביר במשפט אחד למה הוא עדיין בוחר באילת – מה הוא היה אומר?"}
+  {d:"הבחירה זה בזו", who:0, q:"אם אילן היה צריך להסביר במשפט אחד למה הוא עדיין בוחר באילת – מה הוא היה אומר?"},
+  {d:"היכרות יומיומית",who:1,q:"מה הדבר הקטן שהכי עוזר לאילת להירגע אחרי יום עמוס?"},
+  {d:"היכרות יומיומית",who:0,q:"איזה חלק ביום אילן הכי אוהב כשאין לו מחויבויות?"},
+  {d:"היכרות יומיומית",who:1,q:"מה אילת הכי מעדיפה לעשות כשיש לה שעה פנויה לגמרי?"},
+  {d:"היכרות יומיומית",who:0,q:"מה הדבר שאילן נוטה לדחות למרות שהוא יודע שכדאי לעשות אותו?"},
+  {d:"רגשות וקרבה",who:1,q:"באיזה רגע אילת מרגישה הכי קרובה לאילן?"},
+  {d:"רגשות וקרבה",who:0,q:"איזו מחווה קטנה גורמת לאילן להרגיש אהוב במיוחד?"},
+  {d:"רגשות וקרבה",who:1,q:"כשאילת מוטרדת, מה היא הכי צריכה מאילן באותו רגע?"},
+  {d:"רגשות וקרבה",who:0,q:"מה עוזר לאילן להיפתח כשקשה לו לדבר על משהו?"},
+  {d:"תקשורת וקונפליקט",who:1,q:"מה הדבר שהכי מקשה על אילת בזמן ויכוח?"},
+  {d:"תקשורת וקונפליקט",who:0,q:"מה אילן היה רוצה שאילת תבין עליו מהר יותר בזמן מחלוקת?"},
+  {d:"תקשורת וקונפליקט",who:1,q:"מה הדרך הכי טובה להתפייס עם אילת אחרי ריב?"},
+  {d:"תקשורת וקונפליקט",who:0,q:"מתי אילן מעדיף לקחת זמן לעצמו לפני שממשיכים שיחה קשה?"},
+  {d:"זיכרונות משותפים",who:1,q:"איזה רגע זוגי מהשנה האחרונה אילת הייתה שמחה לחוות שוב?"},
+  {d:"זיכרונות משותפים",who:0,q:"איזו יציאה או חופשה משותפת אילן זוכר במיוחד לטובה?"},
+  {d:"זיכרונות משותפים",who:1,q:"איזה רגע מצחיק שלכם אילת מספרת או זוכרת במיוחד?"},
+  {d:"זיכרונות משותפים",who:0,q:"איזה רגע בתחילת הקשר גרם לאילן להבין שיש כאן משהו מיוחד?"},
+  {d:"עתיד וחלומות",who:1,q:"איזה דבר אילת הכי הייתה רוצה שתעשו יחד בשנה הקרובה?"},
+  {d:"עתיד וחלומות",who:0,q:"אם היה לכם סוף שבוע פנוי לגמרי, מה אילן היה רוצה לעשות יחד?"},
+  {d:"עתיד וחלומות",who:1,q:"איזה שינוי קטן בחיים המשותפים אילת הייתה שמחה לעשות?"},
+  {d:"עתיד וחלומות",who:0,q:"איזה חלום אישי אילן היה הכי רוצה שאילת תעודד אותו להגשים?"},
+  {d:"חברות והומור",who:1,q:"מה הכי מצחיק את אילת אצל אילן?"},
+  {d:"חברות והומור",who:0,q:"באיזה סוג בילוי אילן מרגיש שאתם הכי כמו שני חברים טובים?"},
+  {d:"חברות והומור",who:1,q:"איזה הרגל משותף שלכם אילת הכי אוהבת?"},
+  {d:"חברות והומור",who:0,q:"מה הדבר הספונטני שאילן הכי ישמח שתציעו לעשות יחד?"},
+  {d:"צרכים והעדפות",who:1,q:"מה אילת מעדיפה לקבל כשהיא עייפה: שקט, חיבוק, עזרה או שיחה?"},
+  {d:"צרכים והעדפות",who:0,q:"מה גורם לאילן להרגיש שיש לו מספיק מרחב אישי בתוך הקשר?"},
+  {d:"צרכים והעדפות",who:1,q:"איזו מחווה אילת מעריכה יותר ממה שאולי נדמה לאילן?"},
+  {d:"צרכים והעדפות",who:0,q:"מה אילן הכי צריך כדי להרגיש שמקשיבים לו באמת?"},
+  {d:"ערכים וזוגיות",who:1,q:"איזו תכונה בקשר שלכם אילת הכי רוצה לשמור גם בעוד שנים?"},
+  {d:"ערכים וזוגיות",who:0,q:"מה בעיני אילן הופך זוגיות לשותפות טובה באמת?"}
 ];
 let questions=[...allQuestions];
 let gameLength=38;
 
-const GAME_SETS={
-  12:[0,3,5,8,11,14,16,20,23,27,30,35],
-  20:[0,2,4,6,8,10,12,15,16,18,20,22,23,25,27,29,30,32,34,37],
-  38:Array.from({length:38},(_,i)=>i)
-};
-function setGameLength(n){
+function shuffleArray(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function buildBalancedGame(n){
+  const byDomain={};
+  allQuestions.forEach((q,i)=>(byDomain[q.d]??=[]).push(i));
+  Object.keys(byDomain).forEach(d=>byDomain[d]=shuffleArray(byDomain[d]));
+
+  const domains=shuffleArray(Object.keys(byDomain));
+  const selected=[];
+  let turn=0;
+
+  // Round-robin across domains to prevent one theme dominating a game.
+  while(selected.length<n && domains.some(d=>byDomain[d].length)){
+    const d=domains[turn%domains.length];
+    if(byDomain[d].length) selected.push(byDomain[d].shift());
+    turn++;
+  }
+
+  // Shuffle the final order, then gently avoid long runs of same responder.
+  let result=shuffleArray(selected).map(i=>allQuestions[i]);
+  for(let pass=0;pass<5;pass++){
+    for(let i=2;i<result.length;i++){
+      if(result[i].who===result[i-1].who && result[i].who===result[i-2].who){
+        const j=result.findIndex((q,k)=>k>i && q.who!==result[i].who);
+        if(j>i) [result[i],result[j]]=[result[j],result[i]];
+      }
+    }
+  }
+  return result;
+}
+function setGameLength(n, forceNew=false){
   gameLength=[12,20,38].includes(Number(n))?Number(n):38;
-  const ids=GAME_SETS[gameLength]||GAME_SETS[38];
-  questions=ids.map(i=>allQuestions[i]);
+  const key=`coupleQuestionSet_${gameLength}`;
+  let stored=null;
+  if(!forceNew){
+    try{stored=JSON.parse(sessionStorage.getItem(key));}catch(e){}
+  }
+  if(stored && Array.isArray(stored) && stored.length===gameLength){
+    questions=stored.map(i=>allQuestions[i]).filter(Boolean);
+  }else{
+    questions=buildBalancedGame(gameLength);
+    const ids=questions.map(q=>allQuestions.indexOf(q));
+    sessionStorage.setItem(key,JSON.stringify(ids));
+  }
   const sel=document.getElementById("game-length-select");
   if(sel) sel.value=String(gameLength);
 }
 function parseRoomStatus(status){
   const parts=String(status||"lobby").split("|");
-  return {base:parts[0],length:Number(parts[1])||38};
+  return {base:parts[0],length:Number(parts[1])||38,set:parts[2]||""};
 }
-function roomStatus(base){ return `${base}|${gameLength}`; }
+function currentQuestionIds(){
+  return questions.map(q=>allQuestions.indexOf(q)).join(".");
+}
+function roomStatus(base){ return `${base}|${gameLength}|${currentQuestionIds()}`; }
+function applyRoomQuestionSet(rs){
+  gameLength=rs.length;
+  if(rs.set){
+    const ids=rs.set.split(".").map(Number).filter(i=>Number.isInteger(i)&&allQuestions[i]);
+    if(ids.length){ questions=ids.map(i=>allQuestions[i]); return; }
+  }
+  setGameLength(rs.length);
+}
 
 const SPECIAL_CARDS=[
   {icon:"💬",text:"כל אחד אומר לשני דבר אחד שהוא מעריך בו ולא אמר לאחרונה."},
@@ -1035,6 +2072,7 @@ let state = {
   index:0,
   scores:[],
   guesses:[],
+  actuals:[],
   surprises:[],
   selectedScore:null
 };
@@ -1047,10 +2085,26 @@ function show(id){
   document.getElementById(id).classList.remove("hidden");
 }
 
+
+function chooseLength(n){
+  const select=document.getElementById("game-length-select");
+  if(select) select.value=String(n);
+  document.querySelectorAll(".length-card").forEach(card=>{
+    card.classList.toggle("selected",Number(card.dataset.length)===Number(n));
+  });
+}
+function openOnlineSetup(){
+  document.getElementById("online-setup")?.classList.add("open");
+  setTimeout(()=>document.getElementById("online-setup")?.scrollIntoView({behavior:"smooth",block:"center"}),60);
+}
+function closeOnlineSetup(){
+  document.getElementById("online-setup")?.classList.remove("open");
+}
+
 function startQuiz(){
-  setGameLength(document.getElementById("game-length-select")?.value||38);
+  setGameLength(document.getElementById("game-length-select")?.value||38, true);
   markers={wow:{},talk:{}}; saveMarkers();
-  state={index:0,scores:[],guesses:[],surprises:[],selectedScore:null};
+  state={index:0,scores:[],guesses:[],actuals:[],surprises:[],selectedScore:null};
   saveState();
   renderQuestion();
   show("screen-quiz");
@@ -1062,6 +2116,7 @@ function resumeQuiz(){
   const saved=localStorage.getItem("ilanEilatCoupleQuizV2");
   if(!saved){ alert("לא נמצאה התקדמות שמורה."); return; }
   state=JSON.parse(saved);
+  state.actuals=state.actuals||[];
   if(state.index>=questions.length){ showResults(); return; }
   renderQuestion();
   show("screen-quiz");
@@ -1080,29 +2135,81 @@ function renderQuestion(){
   document.getElementById("answer-role-name").textContent=names[responder];
   document.getElementById("question-text").textContent=q.q;
 
-  document.getElementById("guess-text").value=state.guesses[state.index] || "";
-  document.getElementById("surprise-text").value=state.surprises[state.index] || "";
-  state.selectedScore=state.scores[state.index] ?? null;
+  const guess=document.getElementById("guess-text");
+  const actual=document.getElementById("actual-text");
+  const guessLabel=document.getElementById("guess-label");
+  const actualLabel=document.getElementById("actual-label");
+  const answerWrap=document.getElementById("online-answer-wrap");
+  const revealBtn=document.getElementById("reveal-btn");
+  const guessActions=document.getElementById("guess-submit-actions");
+  const wait=document.getElementById("online-wait");
+  const banner=document.getElementById("your-role-banner");
+
+  guess.value=state.guesses[state.index]||"";
+  actual.value=(state.actuals&&state.actuals[state.index])||"";
+  document.getElementById("surprise-text").value=state.surprises[state.index]||"";
+  state.selectedScore=state.scores[state.index]??null;
   updateScoreButtons();
+  updateMarkerButtons();
 
   document.getElementById("phase-guess").classList.remove("hidden");
   document.getElementById("phase-score").classList.add("hidden");
-  updateMarkerButtons();
+  document.getElementById("online-reveal-design").classList.add("hidden");
+  resetRevealGate();
+
+  answerWrap.classList.add("hidden");
+  wait.classList.add("hidden");
+  guessActions.classList.remove("hidden");
+  guess.style.display="";
+  guess.disabled=false;
+  guessLabel.style.display="";
+  guessLabel.textContent=`הניחוש של ${names[guesser]}`;
+  actualLabel.textContent=`התשובה האמיתית של ${names[responder]}`;
+  revealBtn.style.display="";
+  revealBtn.textContent="נעלתי את הניחוש";
+
+  if(!onlineMode){
+    banner.classList.remove("hidden","is-responder");
+    banner.classList.add("is-guesser");
+    banner.textContent=`עכשיו ${names[guesser]} מנחש/ת 🤔`;
+    document.getElementById("guess-phase-help").textContent=
+      `רק ${names[guesser]} מסתכל/ת על המסך עכשיו. אחרי נעילת הניחוש מעבירים את הטלפון ל${names[responder]}.`;
+  }
 }
 
 async function revealAnswerPhase(){
   if(onlineMode){ await submitOnlineGuess(); return; }
-  state.guesses[state.index]=document.getElementById("guess-text").value.trim();
-  saveState();
 
-  const hasTyped = state.guesses[state.index].length > 0;
-  if(!hasTyped){
-    alert("יש לכתוב תשובה לפני החשיפה.");
+  const q=questions[state.index];
+  const responder=q.who;
+  const guesser=1-responder;
+  const guess=document.getElementById("guess-text").value.trim();
+
+  if(!guess){
+    alert("יש לכתוב ניחוש לפני שממשיכים.");
     return;
   }
 
-  document.getElementById("phase-guess").classList.add("hidden");
-  document.getElementById("phase-score").classList.remove("hidden");
+  state.guesses[state.index]=guess;
+  saveState();
+
+  // מסתירים את הניחוש לפני שמעבירים את הטלפון למי שנותן את התשובה.
+  document.getElementById("guess-text").style.display="none";
+  document.getElementById("guess-label").style.display="none";
+  document.getElementById("guess-submit-actions").classList.add("hidden");
+
+  const wrap=document.getElementById("online-answer-wrap");
+  wrap.classList.remove("hidden");
+  document.getElementById("actual-text").value="";
+  document.getElementById("actual-label").textContent=`התשובה האמיתית של ${names[responder]}`;
+
+  const banner=document.getElementById("your-role-banner");
+  banner.classList.remove("hidden","is-guesser");
+  banner.classList.add("is-responder");
+  banner.textContent=`עכשיו ${names[responder]} עונה/ה 💬`;
+
+  document.getElementById("guess-phase-help").textContent=
+    `הניחוש של ${names[guesser]} נעול ומוסתר. עכשיו מעבירים את הטלפון ל${names[responder]}.`;
 }
 
 function chooseScore(v){
@@ -1121,7 +2228,23 @@ async function finishRound(){
     if(state.selectedScore===null){alert("בחרו ציון 0–3 לפני שממשיכים.");return;}
     const guesser=1-q.who;
     const points=state.selectedScore;
-    const scorePatch={last_rating:points};
+
+    const history=getOnlineScoreHistory();
+    const questionId=allQuestions.indexOf(q);
+    const historyItem={
+      round:onlineRoom.round_index,
+      question_id:questionId,
+      domain:q.d,
+      score:points,
+      guesser:guesser===0?"ilan":"eilat",
+      responder:q.who===0?"ilan":"eilat"
+    };
+    const nextHistory=[
+      ...history.filter(x=>Number(x.round)!==Number(onlineRoom.round_index)),
+      historyItem
+    ];
+
+    const scorePatch={last_rating:points,score_history:nextHistory};
     if(guesser===0) scorePatch.ilan_score=(onlineRoom.ilan_score||0)+points;
     else scorePatch.eilat_score=(onlineRoom.eilat_score||0)+points;
     const {data,error}=await supabaseClient.from("couple_rooms").update(scorePatch).eq("id",onlineRoom.id).select().single();
@@ -1197,35 +2320,23 @@ function saveState(){
 
 function showResults(){
   show("screen-result");
+  document.getElementById("couple-profile-section").classList.remove("hidden");
 
   const total=state.scores.reduce((a,b)=>a+(Number(b)||0),0);
   const max=questions.length*3;
-
-  document.getElementById("result-score").textContent=total;
-  document.getElementById("result-max").textContent=`מתוך ${max} נקודות`;
-
-  let title,text;
-  if(total>=92){
-    title="אנחנו מכירים ובוחרים זה בזו";
-    text="יש ביניכם היכרות עמוקה, תקשורת ויכולת לראות את האדם שמולכם גם אחרי השנים.";
-  }else if(total>=69){
-    title="בסיס חזק, ויש עוד מה לגלות";
-    text="יש בסיס טוב, לצד מקומות שבהם אפשר לחזור ולהיות סקרנים זה כלפי זו.";
-  }else if(total>=46){
-    title="כדאי להתקרב מחדש";
-    text="יש מקום ליותר היכרות עם העולם הפנימי של כל אחד מכם.";
-  }else{
-    title="הגיע הזמן לשיחה אחרת";
-    text="הציון אינו קובע אם הזוגיות טובה או לא, אלא מזמין אתכם לשיחה.";
-  }
-
-  document.getElementById("result-title").textContent=title;
-  document.getElementById("result-text").textContent=text;
-
   const {ilan,eilat}=calcPersonalScores();
+
   document.getElementById("final-ilan-score").textContent=ilan;
   document.getElementById("final-eilat-score").textContent=eilat;
 
+  loadMarkers();
+  const wow=markerItems("wow"), talk=markerItems("talk");
+  renderFinalHeader(total,max,wow.length,talk.length);
+  renderMarkerLists(wow,talk);
+  renderCoupleProfile();
+
+  const section=document.getElementById("final-domain-section");
+  section.classList.remove("hidden");
   const domains=[...new Set(questions.map(x=>x.d))];
   const wrap=document.getElementById("domain-results");
   wrap.innerHTML="";
@@ -1234,31 +2345,15 @@ function showResults(){
     const idxs=questions.map((x,i)=>x.d===d?i:-1).filter(i=>i>=0);
     const s=idxs.reduce((sum,i)=>sum+(Number(state.scores[i])||0),0);
     const m=idxs.length*3;
-    const pct=Math.round((s/m)*100);
-
+    const pct=m?Math.round((s/m)*100):0;
     const el=document.createElement("div");
     el.className="domain";
     el.innerHTML=`
-      <div class="domain-top"><span>${d}</span><span>${s}/${m}</span></div>
+      <div class="domain-top"><span>${d}</span><span>${pct}%</span></div>
       <div class="mini-bar"><div style="width:${pct}%"></div></div>
     `;
     wrap.appendChild(el);
   });
-
-  const sr=document.getElementById("surprise-results");
-  sr.innerHTML="";
-  const chosen=state.surprises.map((t,i)=>({t,i})).filter(x=>x.t).slice(0,3);
-
-  if(!chosen.length){
-    sr.innerHTML='<p class="muted">לא נכתבו תשובות מפתיעות במהלך המשחק.</p>';
-  }else{
-    chosen.forEach(x=>{
-      const el=document.createElement("div");
-      el.className="surprise-item";
-      el.innerHTML=`<strong>${questions[x.i].q}</strong><br><span>${escapeHtml(x.t)}</span>`;
-      sr.appendChild(el);
-    });
-  }
 
   saveState();
 }
@@ -1266,7 +2361,7 @@ function showResults(){
 function restartQuiz(){
   if(confirm("להתחיל שאלון חדש? ההתקדמות הנוכחית תימחק.")){
     localStorage.removeItem("ilanEilatCoupleQuizV2");
-    state={index:0,scores:[],guesses:[],surprises:[],selectedScore:null};
+    state={index:0,scores:[],guesses:[],actuals:[],surprises:[],selectedScore:null};
     show("screen-start");
   }
 }
