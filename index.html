@@ -1036,6 +1036,42 @@
       .history-profile{grid-column:1/-1;text-align:right;padding-right:71px}
     }
 
+  
+    /* ===== V10.1 gameplay fixes ===== */
+    .whatsapp-btn{
+      background:#eef8f1;
+      color:#23613d;
+      border:1px solid #bcdcc8;
+      font-weight:900;
+    }
+    .invite-actions{
+      display:grid;
+      grid-template-columns:1.2fr 1fr 1fr;
+    }
+    .reveal-countdown{
+      width:78px;
+      height:78px;
+      margin:12px auto 6px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      background:#fff;
+      border:2px solid #ddb7c4;
+      color:var(--accent);
+      font-size:2.4rem;
+      font-weight:950;
+      box-shadow:0 10px 25px rgba(110,60,76,.10);
+      animation:countPulse .9s ease-in-out infinite;
+    }
+    @keyframes countPulse{
+      50%{transform:scale(1.06)}
+    }
+    #score-choice-content.hidden,
+    #finish-rating-actions.hidden{display:none!important}
+    @media(max-width:680px){
+      .invite-actions{grid-template-columns:1fr}
+    }
+
   </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1263,9 +1299,10 @@
       <div id="online-reveal-design" class="hidden">
         <div id="reveal-gate" class="reveal-gate">
           <div class="big">✨</div>
-          <h3>שניכם עניתם</h3>
-          <p>הניחוש והתשובה נעולים. מוכנים לראות עד כמה אתם מכירים?</p>
-          <button class="primary" type="button" onclick="openReveal()">חשיפת התשובות</button>
+          <h3>שתי התשובות נעולות</h3>
+          <p>החשיפה בעוד</p>
+          <div class="reveal-countdown" id="reveal-countdown">2</div>
+          <div class="muted">שניות</div>
         </div>
         <div id="reveal-content" class="hidden reveal-content">
         <div class="reveal-title">רגע החשיפה</div>
@@ -1286,18 +1323,20 @@
       <p class="muted hidden" id="score-instruction">עכשיו מי שענה מדרג עד כמה הניחוש היה קרוב ומדויק.</p>
 
       <div id="rating-content" class="hidden">
-      <label>הציון לסיבוב</label>
-      <div class="score-row">
-        <button class="score-btn" onclick="chooseScore(0)">0</button>
-        <button class="score-btn" onclick="chooseScore(1)">1</button>
-        <button class="score-btn" onclick="chooseScore(2)">2</button>
-        <button class="score-btn" onclick="chooseScore(3)">3</button>
-      </div>
-      <div class="score-labels">
-        <div>בכלל לא</div>
-        <div>קצת</div>
-        <div>די טוב</div>
-        <div>ממש טוב</div>
+      <div id="score-choice-content">
+        <label>הציון לסיבוב</label>
+        <div class="score-row">
+          <button class="score-btn" onclick="chooseScore(0)">0</button>
+          <button class="score-btn" onclick="chooseScore(1)">1</button>
+          <button class="score-btn" onclick="chooseScore(2)">2</button>
+          <button class="score-btn" onclick="chooseScore(3)">3</button>
+        </div>
+        <div class="score-labels">
+          <div>בכלל לא</div>
+          <div>קצת</div>
+          <div>די טוב</div>
+          <div>ממש טוב</div>
+        </div>
       </div>
 
       <div class="discovery-title">מה קרה לכם ברגע החשיפה?</div>
@@ -1308,7 +1347,7 @@
       <label for="surprise-text">משהו שתרצו לזכור? <span class="muted">(לא חובה)</span></label>
       <textarea id="surprise-text" placeholder="אפשר לכתוב משפט קצר לעצמכם..."></textarea>
 
-      <div class="actions">
+      <div class="actions" id="finish-rating-actions">
         <button class="primary" onclick="finishRound()">סיום הסיבוב</button>
       </div>
       </div>
@@ -1511,6 +1550,9 @@ async function ensureAnon(){
 }
 
 let pendingAdvance = null;
+let lastRenderedOnlineRound = null;
+let revealCountdownTimer = null;
+let revealCountdownKey = null;
 
 function currentSiteUrl(){
   return "https://ilanshahaf-droid.github.io/couple-game/";
@@ -1550,6 +1592,10 @@ async function copyRoomCode(){
   try{await navigator.clipboard.writeText(onlineRoom.room_code); alert("קוד החדר הועתק.");}
   catch(e){prompt("העתיקו את קוד החדר:",onlineRoom.room_code);}
 }
+function shareInviteWhatsApp(){
+  if(!onlineRoom){alert("קודם צריך ליצור חדר.");return;}
+  window.open(`https://wa.me/?text=${encodeURIComponent(getInviteText())}`,"_blank");
+}
 function showInviteControls(){
   const box=document.getElementById("invite-link-info");
   if(!box||!onlineRoom)return;
@@ -1557,8 +1603,9 @@ function showInviteControls(){
     <div class="invite-box">
       <div class="muted">קוד החדר</div>
       <div class="invite-code">${onlineRoom.room_code}</div>
-      <div class="actions">
-        <button class="primary" type="button" onclick="shareInvite()">📤 שיתוף הזמנה</button>
+      <div class="actions invite-actions">
+        <button class="whatsapp-btn" type="button" onclick="shareInviteWhatsApp()">💬 שיתוף ב-WhatsApp</button>
+        <button class="primary" type="button" onclick="shareInvite()">📤 שיתוף נוסף</button>
         <button class="ghost" type="button" onclick="copyRoomCode()">📋 העתקת הקוד</button>
       </div>
     </div>`;
@@ -1566,12 +1613,77 @@ function showInviteControls(){
 function openReveal(){
   document.getElementById("reveal-gate")?.classList.add("hidden");
   document.getElementById("reveal-content")?.classList.remove("hidden");
-  document.getElementById("score-instruction")?.classList.remove("hidden"); document.getElementById("rating-content")?.classList.remove("hidden");
+  document.getElementById("score-instruction")?.classList.remove("hidden");
+  document.getElementById("rating-content")?.classList.remove("hidden");
+
+  const scoreChoice=document.getElementById("score-choice-content");
+  const finishActions=document.getElementById("finish-rating-actions");
+  const instruction=document.getElementById("score-instruction");
+
+  if(onlineMode && onlineRoom){
+    const q=questions[onlineRoom.round_index];
+    const amResponder=playerIndex(myPlayer)===q.who;
+
+    if(scoreChoice) scoreChoice.classList.toggle("hidden",!amResponder);
+    if(finishActions) finishActions.classList.toggle("hidden",!amResponder);
+
+    if(instruction){
+      instruction.textContent=amResponder
+        ? `עכשיו ${names[q.who]} מדרג/ת עד כמה הניחוש היה קרוב לתשובה.`
+        : `הדירוג נעשה רק אצל ${names[q.who]}, שנתן/ה את התשובה האמיתית.`;
+    }
+  }else{
+    scoreChoice?.classList.remove("hidden");
+    finishActions?.classList.remove("hidden");
+  }
 }
+
 function resetRevealGate(){
+  if(revealCountdownTimer){
+    clearInterval(revealCountdownTimer);
+    revealCountdownTimer=null;
+  }
+  revealCountdownKey=null;
+  const countdown=document.getElementById("reveal-countdown");
+  if(countdown) countdown.textContent="2";
   document.getElementById("reveal-gate")?.classList.remove("hidden");
   document.getElementById("reveal-content")?.classList.add("hidden");
-  document.getElementById("score-instruction")?.classList.add("hidden"); document.getElementById("rating-content")?.classList.add("hidden");
+  document.getElementById("score-instruction")?.classList.add("hidden");
+  document.getElementById("rating-content")?.classList.add("hidden");
+  document.getElementById("score-choice-content")?.classList.remove("hidden");
+  document.getElementById("finish-rating-actions")?.classList.remove("hidden");
+}
+
+function startAutoRevealCountdown(){
+  const key=onlineMode && onlineRoom
+    ? `${onlineRoom.id}:${onlineRoom.round_index}`
+    : `local:${state.index}`;
+
+  if(revealCountdownKey===key) return;
+  revealCountdownKey=key;
+
+  const gate=document.getElementById("reveal-gate");
+  const content=document.getElementById("reveal-content");
+  const countdown=document.getElementById("reveal-countdown");
+  gate?.classList.remove("hidden");
+  content?.classList.add("hidden");
+  document.getElementById("rating-content")?.classList.add("hidden");
+  document.getElementById("score-instruction")?.classList.add("hidden");
+
+  let remaining=2;
+  if(countdown) countdown.textContent=String(remaining);
+
+  if(revealCountdownTimer) clearInterval(revealCountdownTimer);
+  revealCountdownTimer=setInterval(()=>{
+    remaining--;
+    if(remaining>0){
+      if(countdown) countdown.textContent=String(remaining);
+      return;
+    }
+    clearInterval(revealCountdownTimer);
+    revealCountdownTimer=null;
+    openReveal();
+  },1000);
 }
 function showTransition(points,guesserIndex,nextIndex,isFinished){
   const ilan=onlineRoom.ilan_score||0, eilat=onlineRoom.eilat_score||0;
@@ -1809,7 +1921,15 @@ async function syncOnlineUI(){
     showTransition(onlineRoom.last_rating,gNow,next,done);
     return;
   }
-  state.index=onlineRoom.round_index||0; renderQuestion(); resetRevealGate(); show("screen-quiz");
+  state.index=onlineRoom.round_index||0;
+  const roundChanged=lastRenderedOnlineRound!==state.index;
+  if(roundChanged){
+    lastRenderedOnlineRound=state.index;
+    state.selectedScore=null;
+    resetRevealGate();
+  }
+  renderQuestion();
+  show("screen-quiz");
   document.getElementById("room-badge").classList.remove("hidden"); document.getElementById("room-badge").textContent=`חדר ${onlineRoom.room_code} • ${myPlayer==="ilan"?"אילן":"אילת"}`;
   const q=questions[state.index], responder=q.who, me=playerIndex(myPlayer), amResponder=me===responder;
   const banner=document.getElementById("your-role-banner");
@@ -1830,8 +1950,19 @@ async function syncOnlineUI(){
   guess.style.display=amResponder?"none":"";
   if(guessLabel) guessLabel.style.display=amResponder?"none":"";
   guess.placeholder="כתבו את הניחוש שלכם כאן…";
-  guess.value=amResponder ? "" : (onlineRoom.guess_text||"");
-  ans.value=onlineRoom.actual_text||"";
+
+  // חשוב: אירוע Realtime מהטלפון השני לא מוחק טקסט שעדיין נכתב מקומית.
+  if(roundChanged){
+    guess.value="";
+    ans.value="";
+  }
+  if(!amResponder && onlineRoom.guess_locked){
+    guess.value=onlineRoom.guess_text||"";
+  }
+  if(amResponder && onlineRoom.actual_locked){
+    ans.value=onlineRoom.actual_text||"";
+  }
+
   wait.classList.toggle("hidden", onlineRoom.guess_locked&&onlineRoom.actual_locked);
   reveal.textContent=amResponder?"ממתינים לניחוש…":"שמירת הניחוש שלי"; reveal.style.display=amResponder?"none":(onlineRoom.guess_locked?"none":"");
   if(onlineRoom.guess_locked&&onlineRoom.actual_locked){
@@ -1846,9 +1977,10 @@ async function syncOnlineUI(){
     document.getElementById("reveal-guess-text").textContent = onlineRoom.guess_text || "—";
     document.getElementById("reveal-actual-text").textContent = onlineRoom.actual_text || "—";
     document.getElementById("score-instruction").textContent = amResponder
-      ? "עכשיו דרג/י עד כמה הניחוש היה קרוב למה שהתכוונת."
-      : "ממתינים לכך שמי שענה ייתן את הציון לסיבוב.";
+      ? "אחרי החשיפה תוכל/י לדרג עד כמה הניחוש היה קרוב למה שהתכוונת."
+      : `הדירוג יופיע רק אצל ${names[responder]}, שנתן/ה את התשובה האמיתית.`;
     document.querySelectorAll(".score-btn").forEach(b=>b.disabled=!amResponder);
+    startAutoRevealCountdown();
   }
 }
 
@@ -1888,6 +2020,7 @@ function submitLocalAnswer(){
 
   document.querySelectorAll(".score-btn").forEach(b=>b.disabled=false);
   resetRevealGate();
+  startAutoRevealCountdown();
 }
 
 async function submitOnlineAnswer(){
@@ -2172,44 +2305,117 @@ function rememberQuestionSet(){
 function buildBalancedGame(n){
   const recent=new Set(recentQuestionIds());
   const preferred=new Set(MODE_DOMAINS[gameMode]||[]);
-  const scored=allQuestions.map((q,i)=>({
-    i,q,
-    weight:(gameMode==="mix"?2:(preferred.has(q.d)?5:1)) + (recent.has(i)?-3:2) + Math.random()*2
-  })).sort((a,b)=>b.weight-a.weight);
+  const half=n/2;
 
-  const candidateIds=scored.map(x=>x.i);
-  const byDomain={};
-  candidateIds.forEach(i=>(byDomain[allQuestions[i].d]??=[]).push(i));
-  Object.keys(byDomain).forEach(d=>byDomain[d]=shuffleArray(byDomain[d]));
-
-  let domainOrder=Object.keys(byDomain).sort((a,b)=>{
-    const pa=preferred.has(a)?1:0, pb=preferred.has(b)?1:0;
-    return pb-pa || Math.random()-.5;
-  });
-
-  const selected=[];
-  let safety=0;
-  while(selected.length<n && safety<1000){
-    const d=domainOrder[safety%domainOrder.length];
-    if(byDomain[d]?.length){
-      const id=byDomain[d].shift();
-      if(!selected.includes(id)) selected.push(id);
-    }
-    safety++;
-    if(safety%domainOrder.length===0) domainOrder=shuffleArray(domainOrder);
+  function uniqueQuestionPoolForResponder(who){
+    const seenText=new Set();
+    const pool=[];
+    allQuestions.forEach((q,i)=>{
+      if(q.who!==who) return;
+      const key=String(q.q||"").trim().toLowerCase();
+      if(seenText.has(key)) return; // מונע גם כפילויות ניסוח במאגר עצמו
+      seenText.add(key);
+      pool.push({q,i});
+    });
+    return pool;
   }
 
-  let result=shuffleArray(selected).map(i=>allQuestions[i]);
-  for(let pass=0;pass<6;pass++){
-    for(let i=2;i<result.length;i++){
-      if(result[i].who===result[i-1].who && result[i].who===result[i-2].who){
-        const j=result.findIndex((q,k)=>k>i && q.who!==result[i].who);
-        if(j>i) [result[i],result[j]]=[result[j],result[i]];
+  function selectForResponder(who,count,globallyUsed){
+    const pool=uniqueQuestionPoolForResponder(who)
+      .filter(x=>!globallyUsed.has(x.i))
+      .map(x=>({
+        ...x,
+        weight:
+          (gameMode==="mix"?2:(preferred.has(x.q.d)?6:1)) +
+          (recent.has(x.i)?-4:2) +
+          Math.random()*2
+      }))
+      .sort((a,b)=>b.weight-a.weight);
+
+    const byDomain={};
+    pool.forEach(x=>(byDomain[x.q.d]??=[]).push(x));
+    Object.keys(byDomain).forEach(d=>byDomain[d]=shuffleArray(byDomain[d]));
+
+    let domains=Object.keys(byDomain).sort((a,b)=>{
+      const pa=preferred.has(a)?1:0, pb=preferred.has(b)?1:0;
+      return pb-pa || Math.random()-.5;
+    });
+
+    const picked=[];
+    let safety=0;
+
+    while(picked.length<count && domains.length && safety<3000){
+      const d=domains[safety%domains.length];
+      if(byDomain[d]?.length){
+        const item=byDomain[d].shift();
+        if(!globallyUsed.has(item.i) && !picked.some(x=>x.i===item.i)){
+          picked.push(item);
+          globallyUsed.add(item.i);
+        }
+      }
+      safety++;
+      if(safety%Math.max(domains.length,1)===0) domains=shuffleArray(domains);
+    }
+
+    if(picked.length<count){
+      for(const item of pool){
+        if(picked.length>=count) break;
+        if(!globallyUsed.has(item.i)){
+          picked.push(item);
+          globallyUsed.add(item.i);
+        }
       }
     }
+
+    return shuffleArray(picked.slice(0,count));
   }
+
+  const globallyUsed=new Set();
+
+  // בוחרים מראש מספר שווה של שאלות לכל אחד, בלי שום חפיפה.
+  const responder0=selectForResponder(0,half,globallyUsed);
+  const responder1=selectForResponder(1,half,globallyUsed);
+
+  if(responder0.length<half || responder1.length<half){
+    throw new Error("אין מספיק שאלות ייחודיות במאגר כדי לבנות את אורך המשחק שנבחר.");
+  }
+
+  const firstResponder=Math.random()<.5?0:1;
+  const result=[];
+  const usedIds=new Set();
+
+  for(let i=0;i<n;i++){
+    const responder=(i%2===0)?firstResponder:1-firstResponder;
+    const source=responder===0?responder0:responder1;
+    const item=source.shift();
+
+    if(!item || usedIds.has(item.i)){
+      throw new Error("נמצאה כפילות לא צפויה בבניית המשחק.");
+    }
+
+    usedIds.add(item.i);
+    result.push(item.q);
+  }
+
   return result;
 }
+
+function validateUniqueQuestions(list){
+  const seenIds=new Set();
+  const seenText=new Set();
+
+  for(const q of list){
+    const id=allQuestions.indexOf(q);
+    const key=String(q?.q||"").trim().toLowerCase();
+
+    if(id<0 || seenIds.has(id) || seenText.has(key)) return false;
+
+    seenIds.add(id);
+    seenText.add(key);
+  }
+  return true;
+}
+
 function setGameLength(n, forceNew=false){
   gameLength=[12,20,38].includes(Number(n))?Number(n):38;
   const key=`coupleQuestionSet_${gameLength}_${gameMode}`;
@@ -2217,12 +2423,29 @@ function setGameLength(n, forceNew=false){
   if(!forceNew){
     try{stored=JSON.parse(sessionStorage.getItem(key));}catch(e){}
   }
+  const bonusKey=`${key}_bonus`;
   if(stored && Array.isArray(stored) && stored.length===gameLength){
     questions=stored.map(i=>allQuestions[i]).filter(Boolean);
+
+    if(!validateUniqueQuestions(questions)){
+      questions=buildBalancedGame(gameLength);
+      const ids=questions.map(q=>allQuestions.indexOf(q));
+      sessionStorage.setItem(key,JSON.stringify(ids));
+      generateBonusRounds();
+      sessionStorage.setItem(bonusKey,bonusRounds.join("."));
+      rememberQuestionSet();
+    }else if(forceNew){
+      generateBonusRounds();
+      sessionStorage.setItem(bonusKey,bonusRounds.join("."));
+    }else{
+      setBonusRoundsFromString(sessionStorage.getItem(bonusKey)||"");
+    }
   }else{
     questions=buildBalancedGame(gameLength);
     const ids=questions.map(q=>allQuestions.indexOf(q));
     sessionStorage.setItem(key,JSON.stringify(ids));
+    generateBonusRounds();
+    sessionStorage.setItem(bonusKey,bonusRounds.join("."));
     rememberQuestionSet();
   }
   const sel=document.getElementById("game-length-select");
@@ -2230,25 +2453,76 @@ function setGameLength(n, forceNew=false){
 }
 function parseRoomStatus(status){
   const parts=String(status||"lobby").split("|");
-  return {base:parts[0],length:Number(parts[1])||38,set:parts[2]||"",mode:parts[3]||"mix"};
+  return {
+    base:parts[0],
+    length:Number(parts[1])||38,
+    set:parts[2]||"",
+    mode:parts[3]||"mix",
+    bonuses:parts[4]||""
+  };
 }
 function currentQuestionIds(){
   return questions.map(q=>allQuestions.indexOf(q)).join(".");
 }
-function roomStatus(base){ return `${base}|${gameLength}|${currentQuestionIds()}|${gameMode}`; }
+function roomStatus(base){
+  return `${base}|${gameLength}|${currentQuestionIds()}|${gameMode}|${bonusRounds.join(".")}`;
+}
 function applyRoomQuestionSet(rs){
   gameLength=rs.length;
   chooseGameMode(rs.mode||"mix");
   if(rs.set){
     const ids=rs.set.split(".").map(Number).filter(i=>Number.isInteger(i)&&allQuestions[i]);
-    if(ids.length){ questions=ids.map(i=>allQuestions[i]); return; }
+    if(ids.length){
+      const candidate=ids.map(i=>allQuestions[i]);
+      if(validateUniqueQuestions(candidate)){
+        questions=candidate;
+        setBonusRoundsFromString(rs.bonuses);
+        return;
+      }
+    }
   }
   setGameLength(rs.length);
+  setBonusRoundsFromString(rs.bonuses);
 }
 
 
+let bonusRounds=[];
+
+function desiredBonusCount(){
+  if(questions.length<=12) return 2;
+  if(questions.length<=20) return 4;
+  return 6;
+}
+function generateBonusRounds(){
+  const wanted=desiredBonusCount();
+  const perPlayer=wanted/2;
+  const byGuesser={0:[],1:[]};
+
+  questions.forEach((q,index)=>{
+    if(index===0) return; // לא פותחים משחק בשאלת בונוס
+    const guesser=1-q.who;
+    byGuesser[guesser].push(index);
+  });
+
+  const chosen=[];
+  [0,1].forEach(guesser=>{
+    const pool=shuffleArray(byGuesser[guesser]);
+    chosen.push(...pool.slice(0,perPlayer));
+  });
+
+  bonusRounds=chosen.sort((a,b)=>a-b);
+  return bonusRounds;
+}
+function setBonusRoundsFromString(value){
+  const parsed=String(value||"")
+    .split(".")
+    .map(Number)
+    .filter(i=>Number.isInteger(i) && i>=0 && i<questions.length);
+  bonusRounds=[...new Set(parsed)].sort((a,b)=>a-b);
+  if(!bonusRounds.length) generateBonusRounds();
+}
 function isBonusRound(index){
-  return index>=0 && (index+1)%6===0;
+  return bonusRounds.includes(Number(index));
 }
 function roundMultiplier(index){ return isBonusRound(index)?2:1; }
 function awardedPoints(index,base){ return Number(base||0)*roundMultiplier(index); }
@@ -2256,9 +2530,7 @@ function roundMax(index){ return 3*roundMultiplier(index); }
 function calculateGameMax(){
   return questions.reduce((sum,_,i)=>sum+roundMax(i),0);
 }
-function bonusCount(){
-  return questions.reduce((n,_,i)=>n+(isBonusRound(i)?1:0),0);
-}
+function bonusCount(){ return bonusRounds.length; }
 
 const SPECIAL_CARDS=[
   {icon:"💬",text:"כל אחד אומר לשני דבר אחד שהוא מעריך בו ולא אמר לאחרונה."},
@@ -2393,8 +2665,10 @@ function renderQuestion(){
   const wait=document.getElementById("online-wait");
   const banner=document.getElementById("your-role-banner");
 
-  guess.value=state.guesses[state.index]||"";
-  actual.value=(state.actuals&&state.actuals[state.index])||"";
+  if(!onlineMode){
+    guess.value=state.guesses[state.index]||"";
+    actual.value=(state.actuals&&state.actuals[state.index])||"";
+  }
   document.getElementById("surprise-text").value=state.surprises[state.index]||"";
   state.selectedScore=state.scores[state.index]??null;
   updateScoreButtons();
