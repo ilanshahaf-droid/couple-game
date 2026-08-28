@@ -1128,6 +1128,12 @@
 
   
     .qualitative-final-section{display:none!important}
+  
+    /* ===== V10.5 numeric rating cleanup ===== */
+    .score-labels{
+      display:none!important;
+    }
+
   </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1691,13 +1697,20 @@ function openReveal(){
     const q=questions[onlineRoom.round_index];
     const amResponder=playerIndex(myPlayer)===q.who;
 
+    const ratingContent=document.getElementById("rating-content");
     if(scoreChoice) scoreChoice.classList.toggle("hidden",!amResponder);
     if(finishActions) finishActions.classList.toggle("hidden",!amResponder);
 
-    if(instruction){
-      instruction.textContent=amResponder
-        ? `עכשיו ${names[q.who]} מדרג/ת עד כמה הניחוש היה קרוב לתשובה.`
-        : `הדירוג נעשה רק אצל ${names[q.who]}, שנתן/ה את התשובה האמיתית.`;
+    if(!amResponder){
+      // המנחש לא רואה שום אפשרות דירוג.
+      if(ratingContent) ratingContent.classList.add("hidden");
+      if(instruction) instruction.classList.add("hidden");
+    }else{
+      if(ratingContent) ratingContent.classList.remove("hidden");
+      if(instruction){
+        instruction.classList.remove("hidden");
+        instruction.textContent=`עכשיו ${names[q.who]} נותן/ת ציון מספרי לניחוש.`;
+      }
     }
   }else{
     scoreChoice?.classList.remove("hidden");
