@@ -1114,6 +1114,20 @@
       .whatsapp-btn{min-height:58px!important;font-size:1rem!important}
     }
 
+  
+    /* ===== V10.4 FIXED — numeric score only ===== */
+    .discovery-title,
+    .discovery-actions,
+    label[for="surprise-text"],
+    #surprise-text,
+    .discoveries-grid,
+    #final-wow-count,
+    #final-talk-count{
+      display:none!important;
+    }
+
+  
+    .qualitative-final-section{display:none!important}
   </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1129,7 +1143,7 @@
       <h1>כמה אנחנו באמת מכירים?</h1>
       <p class="start-subtitle">
         ערב אחד, כמה שאלות טובות, והרבה רגעים של
-        <strong>“וואו, לא ידעתי”</strong>.
+        <strong>היכרות, הפתעה וצחוק</strong>.
       </p>
       <div class="start-tags">
         <span>🤍 בלי מבחנים</span>
@@ -1517,7 +1531,7 @@
       <div id="couple-profile-insight" class="profile-insight"></div>
     </section>
 
-    <section class="final-section">
+    <section class="final-section qualitative-final-section">
       <div class="final-section-head">
         <div>
           <div class="final-section-kicker">החלק החשוב באמת</div>
@@ -2173,7 +2187,7 @@ function finalResultCopy(total,max){
   };
   if(pct>=.60) return {
     title:"אתם מכירים היטב — ועדיין מצליחים להפתיע",
-    text:"יש ביניכם בסיס משמעותי של היכרות, אבל המשחק גם חשף מקומות שבהם הניחוש והתשובה לא תמיד נפגשו. זה שילוב מעניין: מצד אחד הרבה ידע משותף, ומצד שני מספיק מרחב כדי להמשיך לגלות זה את זו. שווה במיוחד לחזור לרגעים שסימנתם כ'וואו, לא ידעתי'."
+    text:"יש ביניכם בסיס משמעותי של היכרות, אבל המשחק גם חשף מקומות שבהם הניחוש והתשובה לא תמיד נפגשו. זה שילוב מעניין: מצד אחד הרבה ידע משותף, ומצד שני מספיק מרחב כדי להמשיך לגלות זה את זו. שווה במיוחד לחזור לרגעים שבהם התשובה הפתיעה אתכם."
   };
   if(pct>=.45) return {
     title:"יש ביניכם היכרות — ויש עוד עולם לגלות",
@@ -2204,12 +2218,8 @@ function renderFinalHeader(total,max,wowCount,talkCount){
 function renderMarkerLists(wow,talk){
   const wowBox=document.getElementById("final-wow-list");
   const talkBox=document.getElementById("final-talk-list");
-  wowBox.innerHTML=wow.length
-    ? wow.map(i=>`<div class="result-item">${escapeHtml(questions[i].q)}</div>`).join("")
-    : `<div class="result-empty">לא סימנתם רגעי “וואו” במכשיר הזה.</div>`;
-  talkBox.innerHTML=talk.length
-    ? talk.map(i=>`<div class="result-item">${escapeHtml(questions[i].q)}</div>`).join("")
-    : `<div class="result-empty">לא סימנתם נושאים לחזרה במכשיר הזה.</div>`;
+  if(wowBox) wowBox.innerHTML="";
+  if(talkBox) talkBox.innerHTML="";
 }
 function finalSummaryText(){
   const total=document.getElementById("result-score")?.textContent||"";
@@ -2723,7 +2733,7 @@ function renderQuestion(){
     guess.value=state.guesses[state.index]||"";
     actual.value=(state.actuals&&state.actuals[state.index])||"";
   }
-  document.getElementById("surprise-text").value=state.surprises[state.index]||"";
+  document.getElementById("surprise-text").value="";
   state.selectedScore=state.scores[state.index]??null;
   updateScoreButtons();
   updateMarkerButtons();
@@ -2843,7 +2853,7 @@ async function finishRound(){
   }
 
   state.scores[state.index]=awardedPoints(state.index,state.selectedScore);
-  state.surprises[state.index]=document.getElementById("surprise-text").value.trim();
+  state.surprises[state.index]="";
   saveState();
   showScoreboard();
 }
