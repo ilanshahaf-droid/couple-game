@@ -1072,6 +1072,48 @@
       .invite-actions{grid-template-columns:1fr}
     }
 
+  
+    /* ===== V10.3 WhatsApp share fix ===== */
+    .invite-box-visible{
+      display:block!important;
+      margin-top:18px!important;
+      padding:18px!important;
+      border-radius:20px!important;
+      background:linear-gradient(180deg,#fff,#f7fbf8)!important;
+      border:1px solid #cfe3d6!important;
+      box-shadow:0 8px 24px rgba(38,97,61,.08)!important;
+      overflow:visible!important;
+    }
+    .invite-share-title{
+      font-size:1.05rem;
+      font-weight:950;
+      margin-bottom:4px;
+      color:var(--text);
+    }
+    .invite-actions{
+      display:grid!important;
+      grid-template-columns:1.35fr 1fr 1fr!important;
+      gap:9px!important;
+      margin-top:12px!important;
+      overflow:visible!important;
+    }
+    .whatsapp-btn{
+      display:block!important;
+      width:100%!important;
+      min-height:54px!important;
+      background:#e9f7ee!important;
+      color:#1f6a3e!important;
+      border:1.5px solid #a9d5b9!important;
+      font-weight:950!important;
+      border-radius:14px!important;
+      font-size:.96rem!important;
+      box-shadow:none!important;
+    }
+    @media(max-width:680px){
+      .invite-actions{grid-template-columns:1fr!important}
+      .whatsapp-btn{min-height:58px!important;font-size:1rem!important}
+    }
+
   </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1227,6 +1269,7 @@
 
       <div id="online-status" class="muted center"></div>
       <div id="invite-link-info"></div>
+      <button id="whatsapp-fallback-btn" class="whatsapp-btn hidden" type="button" onclick="shareInviteWhatsApp()">💬 שיתוף ב-WhatsApp</button>
     </div>
 
     <div class="start-section history-section">
@@ -1599,14 +1642,24 @@ function shareInviteWhatsApp(){
 function showInviteControls(){
   const box=document.getElementById("invite-link-info");
   if(!box||!onlineRoom)return;
+  document.getElementById("whatsapp-fallback-btn")?.classList.remove("hidden");
+
   box.innerHTML=`
-    <div class="invite-box">
-      <div class="muted">קוד החדר</div>
+    <div class="invite-box invite-box-visible">
+      <div class="invite-share-title">החדר מוכן 💞</div>
+      <div class="muted">שלחו עכשיו את ההזמנה לבן/בת הזוג</div>
       <div class="invite-code">${onlineRoom.room_code}</div>
-      <div class="actions invite-actions">
-        <button class="whatsapp-btn" type="button" onclick="shareInviteWhatsApp()">💬 שיתוף ב-WhatsApp</button>
-        <button class="primary" type="button" onclick="shareInvite()">📤 שיתוף נוסף</button>
-        <button class="ghost" type="button" onclick="copyRoomCode()">📋 העתקת הקוד</button>
+
+      <div class="invite-actions">
+        <button class="whatsapp-btn" type="button" onclick="shareInviteWhatsApp()">
+          💬 שיתוף ב-WhatsApp
+        </button>
+        <button class="secondary" type="button" onclick="shareInvite()">
+          📤 שיתוף נוסף
+        </button>
+        <button class="ghost" type="button" onclick="copyRoomCode()">
+          📋 העתקת הקוד
+        </button>
       </div>
     </div>`;
 }
@@ -1827,7 +1880,7 @@ async function createOnlineRoom(){
       }
       throw error;
     }
-    onlineRoom=data; onlineMode=true; markers={wow:{},talk:{}}; saveMarkers(); document.getElementById("room-code-input").value=code;
+    onlineRoom=data; onlineMode=true; showInviteControls(); markers={wow:{},talk:{}}; saveMarkers(); document.getElementById("room-code-input").value=code;
     await subscribeRoom(); showOnlineStatus(`החדר נוצר. הקוד הוא ${code}. אפשר לשתף עכשיו קישור ישיר לבן/בת הזוג.`); showShareRoomActions();
   }catch(e){ alert("לא הצלחנו ליצור חדר: "+e.message); }
 }
@@ -1890,7 +1943,7 @@ async function joinOnlineRoom(){
     const rs=parseRoomStatus(data.status); applyRoomQuestionSet(rs); loadMarkers();
     const patch=myPlayer==="ilan"?{ilan_online:true}:{eilat_online:true};
     await supabaseClient.from("couple_rooms").update(patch).eq("id",data.id);
-    await subscribeRoom(); showOnlineStatus(`התחברתם לחדר ${code}.`); document.getElementById("invite-link-info").innerHTML=""; await refreshRoom();
+    await subscribeRoom(); showOnlineStatus(`התחברתם לחדר ${code}.`); document.getElementById("invite-link-info").innerHTML=""; document.getElementById("whatsapp-fallback-btn")?.classList.add("hidden"); await refreshRoom();
   }catch(e){ alert("לא הצלחנו להצטרף: "+e.message); }
 }
 function showOnlineStatus(s){document.getElementById("online-status").textContent=s;}
@@ -1909,7 +1962,8 @@ async function syncOnlineUI(){
   if(!onlineMode||!onlineRoom)return;
   const rs=parseRoomStatus(onlineRoom.status); applyRoomQuestionSet(rs);
   if(rs.base==="lobby"){
-    show("screen-start"); showOnlineStatus(onlineRoom.ilan_online&&onlineRoom.eilat_online?"שניכם מחוברים — מתחילים!":"ממתינים לטלפון השני…");
+    show("screen-start");
+    if(onlineRoom.host_player===myPlayer) showInviteControls(); showOnlineStatus(onlineRoom.ilan_online&&onlineRoom.eilat_online?"שניכם מחוברים — מתחילים!":"ממתינים לטלפון השני…");
     if(onlineRoom.ilan_online&&onlineRoom.eilat_online) startOnlineIfReady(); return;
   }
   if(rs.base==="finished"){showOnlineResults();return;}
